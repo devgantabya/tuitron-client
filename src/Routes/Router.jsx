@@ -7,6 +7,7 @@ import Tuitions from "./../Pages/Tuitions/Tuitions";
 import Tutors from "./../Pages/Tutors/Tutors";
 import About from "./../Pages/About/About";
 import Contact from "./../Pages/Contact/Contact";
+import TutorProfile from "../Pages/TutorProfile/TutorProfile";
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: "contact",
         Component: Contact,
+      },
+      {
+        path: "tutor/:id",
+        Component: TutorProfile,
       },
     ],
   },
