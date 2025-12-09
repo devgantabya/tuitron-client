@@ -1,29 +1,18 @@
 import { useParams } from "react-router";
-import { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
+import { useEffect, useState } from "react";
 import { FaBook, FaMapMarkerAlt, FaMoneyBillWave } from "react-icons/fa";
 
 export default function TuitionDetails() {
   const { id } = useParams();
-  const { user } = useContext(AuthContext);
-
   const [tuition, setTuition] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTuition = async () => {
-      if (!user) return;
-
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/tuitions/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.accessToken}`,
-            },
-          }
+          `${import.meta.env.VITE_BASE_URL}/tuitions/${id}`
         );
-
         if (!res.ok) throw new Error("Failed to fetch tuition");
 
         const data = await res.json();
@@ -37,7 +26,7 @@ export default function TuitionDetails() {
     };
 
     fetchTuition();
-  }, [id, user]);
+  }, [id]);
 
   if (loading) return <p className="text-center py-10">Loading...</p>;
   if (!tuition) return <p className="text-center py-10">Tuition not found</p>;

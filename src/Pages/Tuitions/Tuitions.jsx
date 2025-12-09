@@ -1,27 +1,16 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import TuitionCard from "../../Components/TuitionCard/TuitionCard";
-import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
 
 export default function Tuitions() {
   const [tuitions, setTuitions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchTuitions = async () => {
-      if (!user) return;
-
       try {
-        const role = user.role || "Student";
+        const url = `${import.meta.env.VITE_BASE_URL}/tuitions`;
 
-        const res = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/tuitions?role=${role}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user?.accessToken}`,
-            },
-          }
-        );
+        const res = await fetch(url); // ✔ No token, no headers
 
         if (!res.ok) throw new Error("Failed to fetch tuitions");
 
@@ -36,7 +25,7 @@ export default function Tuitions() {
     };
 
     fetchTuitions();
-  }, [user]);
+  }, []);
 
   if (loading) return <p className="text-center py-10">Loading tuitions...</p>;
   if (!tuitions || tuitions.length === 0)

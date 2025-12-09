@@ -58,9 +58,9 @@ export default function Register() {
       const savedUser = await saveUserToDB();
       toast.success("Registration successful!");
 
-      if (savedUser.role === "Student") navigate("/student-dashboard");
-      else if (savedUser.role === "Tutor") navigate("/tutor-dashboard");
-      else if (savedUser.role === "Admin") navigate("/admin-dashboard");
+      if (savedUser.role === "Student") navigate("/student");
+      else if (savedUser.role === "Tutor") navigate("/tutor");
+      else if (savedUser.role === "Admin") navigate("/admin");
       else navigate("/");
     } catch (err) {
       console.error(err);
@@ -88,9 +88,9 @@ export default function Register() {
       const savedUser = await res.json();
       toast.success("Login successful!");
 
-      if (savedUser.user.role === "Student") navigate("/student-dashboard");
-      else if (savedUser.user.role === "Tutor") navigate("/tutor-dashboard");
-      else if (savedUser.user.role === "Admin") navigate("/admin-dashboard");
+      if (savedUser.user.role === "Student") navigate("/student");
+      else if (savedUser.user.role === "Tutor") navigate("/tutor");
+      else if (savedUser.user.role === "Admin") navigate("/admin");
       else navigate("/");
     } catch (err) {
       console.error(err);

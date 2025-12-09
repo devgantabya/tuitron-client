@@ -34,9 +34,9 @@ export default function Login() {
 
       toast.success("Login successful!");
 
-      if (roleData.role === "Student") navigate("/student-dashboard");
-      else if (roleData.role === "Tutor") navigate("/tutor-dashboard");
-      else if (roleData.role === "Admin") navigate("/admin-dashboard");
+      if (roleData.role === "Student") navigate("/student");
+      else if (roleData.role === "Tutor") navigate("/tutor");
+      else if (roleData.role === "Admin") navigate("/admin");
       else navigate(from);
     } catch (err) {
       console.error(err);
@@ -64,9 +64,9 @@ export default function Login() {
       const savedUser = await res.json();
       toast.success("Login successful!");
 
-      if (savedUser.user.role === "Student") navigate("/student-dashboard");
-      else if (savedUser.user.role === "Tutor") navigate("/tutor-dashboard");
-      else if (savedUser.user.role === "Admin") navigate("/admin-dashboard");
+      if (savedUser.user.role === "Student") navigate("/student");
+      else if (savedUser.user.role === "Tutor") navigate("/tutor");
+      else if (savedUser.user.role === "Admin") navigate("/admin");
       else navigate(from);
     } catch (err) {
       console.error(err);

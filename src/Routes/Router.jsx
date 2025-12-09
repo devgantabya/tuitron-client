@@ -25,6 +25,14 @@ export const router = createBrowserRouter([
         Component: Home,
       },
       {
+        path: "login",
+        Component: Login,
+      },
+      {
+        path: "register",
+        Component: Register,
+      },
+      {
         path: "tuitions",
         Component: Tuitions,
       },
@@ -55,15 +63,7 @@ export const router = createBrowserRouter([
     Component: AuthLayout,
     children: [
       {
-        path: "login",
-        Component: Login,
-      },
-      {
-        path: "register",
-        Component: Register,
-      },
-      {
-        path: "student-dashboard",
+        path: "student",
         element: (
           <PrivateRoute allowedRoles={["Student"]}>
             <StudentDashboard />
@@ -72,7 +72,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "tutor-dashboard",
+        path: "tutor",
         element: (
           <PrivateRoute allowedRoles={["Tutor"]}>
             <TutorDashboard />
@@ -81,7 +81,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "admin-dashboard",
+        path: "admin",
         element: (
           <PrivateRoute allowedRoles={["Admin"]}>
             <AdminDashboard />

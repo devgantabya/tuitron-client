@@ -1,10 +1,8 @@
-import React, { useState, use, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import { Link, NavLink, useNavigate } from "react-router";
 import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
 import logoLight from "../../assets/logo-primary.png";
 import logoDark from "../../assets/logo-white.png";
-import { FaMoon } from "react-icons/fa";
-import { GoSun } from "react-icons/go";
 import { toast } from "react-toastify";
 
 const Navbar = () => {
@@ -12,7 +10,6 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, signOutUser } = use(AuthContext);
   const navigate = useNavigate();
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const menuRef = useRef();
   const dropdownRef = useRef();
 
@@ -37,6 +34,26 @@ const Navbar = () => {
     } catch {
       toast.error("Logout failed! Try again.");
     }
+  };
+
+  const getDashboardLink = () => {
+    if (!user || !user.role) return "/";
+
+    if (user.role === "student") return "/student";
+    if (user.role === "tutor") return "/tutor";
+    if (user.role === "admin") return "/admin";
+
+    return "/";
+  };
+
+  const getDashboardLabel = () => {
+    if (!user || !user.role) return "Dashboard";
+
+    if (user.role === "student") return "Student Dashboard";
+    if (user.role === "tutor") return "Tutor Dashboard";
+    if (user.role === "admin") return "Admin Dashboard";
+
+    return "Dashboard";
   };
 
   const links = (
@@ -115,62 +132,8 @@ const Navbar = () => {
           Contact
         </NavLink>
       </li>
-
-      {/* {user && (
-        <>
-          <li onClick={() => setMenuOpen(false)}>
-            <NavLink
-              to="/addTuition"
-              className={({ isActive }) =>
-                `px-3 py-2 font-medium transition-colors duration-200 ${
-                  isActive ? "text-blue-600 border-b-2" : "hover:text-blue-600"
-                }`
-              }
-            >
-              Add Tuition
-            </NavLink>
-          </li>
-
-          <li onClick={() => setMenuOpen(false)}>
-            <NavLink
-              to="/addTutor"
-              className={({ isActive }) =>
-                `px-3 py-2 font-medium transition-colors duration-200 ${
-                  isActive ? "text-blue-600 border-b-2" : "hover:text-blue-600"
-                }`
-              }
-            >
-              Add Tutor
-            </NavLink>
-          </li>
-
-          <li onClick={() => setMenuOpen(false)}>
-            <NavLink
-              to="/myTuitions"
-              className={({ isActive }) =>
-                `px-3 py-2 font-medium transition-colors duration-200 ${
-                  isActive ? "text-blue-600 border-b-2" : "hover:text-blue-600"
-                }`
-              }
-            >
-              My Tuitions
-            </NavLink>
-          </li>
-        </>
-      )} */}
     </>
   );
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.querySelector("html").setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-  };
-
-  useEffect(() => {
-    document.querySelector("html").setAttribute("data-theme", theme);
-  }, [theme]);
 
   return (
     <nav className="bg-base-100 shadow-md sticky top-0 z-50">
@@ -212,21 +175,13 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-end space-x-3">
-          <button onClick={toggleTheme} className="btn btn-ghost btn-circle">
-            {theme === "light" ? (
-              <FaMoon className="text-xl" />
-            ) : (
-              <GoSun className="text-xl" />
-            )}
-          </button>
-
           {user ? (
             <div className="dropdown dropdown-end relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="btn btn-ghost btn-circle avatar"
+                className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-base-200"
               >
-                <div className="w-10 rounded-full bg-green-100 border border-blue-600 overflow-hidden">
+                <div className="w-10 h-10 rounded-full bg-green-100 border border-blue-600 overflow-hidden">
                   <img
                     src={
                       user.photoURL ||
@@ -235,12 +190,40 @@ const Navbar = () => {
                     alt={user.displayName || "User"}
                   />
                 </div>
+
+                {/* Dropdown arrow */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-4 w-4 transition-transform ${
+                    dropdownOpen ? "rotate-180" : "rotate-0"
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
               </button>
 
               {dropdownOpen && (
                 <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box absolute right-0 mt-3 w-52 p-2 shadow z-50">
                   <li className="font-semibold text-gray-700 px-3 py-2 border-b">
                     {user.displayName || "User"}
+                  </li>
+
+                  <li>
+                    <Link
+                      to={getDashboardLink()}
+                      onClick={() => setDropdownOpen(false)}
+                      className="text-gray-700 w-full flex gap-2 items-center"
+                    >
+                      <span className="text-lg">📊</span> {getDashboardLabel()}
+                    </Link>
                   </li>
                   <li>
                     <button

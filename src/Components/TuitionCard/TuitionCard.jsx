@@ -6,7 +6,7 @@ export default function TuitionCard({ tuition }) {
 
   return (
     <div className="border rounded-xl p-5 shadow-sm bg-white hover:shadow-md transition">
-      <h2 className="text-xl font-semibold">{subject}</h2>
+      <h2 className="text-xl font-semibold">{subject || "Unknown Subject"}</h2>
 
       <p className="flex items-center gap-2 text-gray-600 mt-2">
         <FaBook /> Class: {class_level}
