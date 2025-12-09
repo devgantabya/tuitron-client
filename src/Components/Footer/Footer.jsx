@@ -5,7 +5,7 @@ import footerLogoLight from "../../assets/logo-primary.png";
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t bg-white dark:bg-gray-900 dark:border-gray-700 mt-10">
+    <footer className="w-full border-t border-gray-200 bg-gray-100 dark:bg-gray-900 dark:border-gray-700 mt-10">
       <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <Link
           to="/"
@@ -75,7 +75,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="text-center py-4 text-xs text-gray-600 dark:text-gray-400 border-t dark:border-gray-700">
+      <div className="text-center max-w-7xl mx-auto py-4 text-xs text-gray-600 dark:text-gray-400 border-t border-gray-400 dark:border-gray-700">
         © {new Date().getFullYear()} Tuitron. All Rights Reserved.
       </div>
     </footer>

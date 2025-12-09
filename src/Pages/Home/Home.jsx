@@ -9,7 +9,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
             Find the Perfect Tutor for Your Learning Journey
           </h1>
-          <p className="mt-4 text-gray-600 dark:text-gray-400 text-lg">
+          <p className="mt-4 text-gray-600 dark:text-red-400 text-lg">
             Tuitron connects students with verified tutors and provides a smooth
             tuition management experience.
           </p>

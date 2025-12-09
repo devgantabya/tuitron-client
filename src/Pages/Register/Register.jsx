@@ -24,7 +24,7 @@ export default function Register() {
 
   const saveUserToDB = async () => {
     try {
-      const res = await fetch("http://localhost:5000/users/register", {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -73,7 +73,7 @@ export default function Register() {
       const result = await signInWithGoogle();
       const token = await result.user.getIdToken();
 
-      const res = await fetch("http://localhost:5000/users", {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

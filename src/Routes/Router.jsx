@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router";
-import Root from "../Layouts/Root";
 import Home from "../Pages/Home/Home";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
@@ -12,46 +11,57 @@ import PrivateRoute from "./PrivateRoute";
 import StudentDashboard from "./../Pages/dashboard/StudentDashboard";
 import TutorDashboard from "../Pages/dashboard/TutorDashboard";
 import AdminDashboard from "./../Pages/dashboard/AdminDashboard";
+import TuitionDetails from "./../Pages/TuitionDetails/TuitionDetails";
+import RootLayout from "../Layouts/RootLayout/RootLayout";
+import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    Component: RootLayout,
     children: [
-      // Public Routes
       {
         index: true,
-        element: <Home />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
+        Component: Home,
       },
       {
         path: "tuitions",
-        element: <Tuitions />,
+        Component: Tuitions,
+      },
+      {
+        path: "tuitions/:id",
+        Component: TuitionDetails,
       },
       {
         path: "tutors",
-        element: <Tutors />,
+        Component: Tutors,
       },
       {
         path: "about",
-        element: <About />,
+        Component: About,
       },
       {
         path: "contact",
-        element: <Contact />,
+        Component: Contact,
       },
       {
         path: "tutor/:id",
-        element: <TutorProfile />,
+        Component: TutorProfile,
       },
-
+    ],
+  },
+  {
+    path: "/",
+    Component: AuthLayout,
+    children: [
+      {
+        path: "login",
+        Component: Login,
+      },
+      {
+        path: "register",
+        Component: Register,
+      },
       {
         path: "student-dashboard",
         element: (

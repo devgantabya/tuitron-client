@@ -24,9 +24,12 @@ export default function Login() {
       const userCredential = await signInUser(email, password);
       const token = await userCredential.user.getIdToken();
 
-      const res = await fetch(`http://localhost:5000/users/role/${email}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/users/role/${email}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const roleData = await res.json();
 
       toast.success("Login successful!");
@@ -46,7 +49,7 @@ export default function Login() {
       const result = await signInWithGoogle();
       const token = await result.user.getIdToken();
 
-      const res = await fetch("http://localhost:5000/users", {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

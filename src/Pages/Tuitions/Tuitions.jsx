@@ -1,26 +1,45 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import TuitionCard from "../../Components/TuitionCard/TuitionCard";
+import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
 
 export default function Tuitions() {
   const [tuitions, setTuitions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/tuitions`)
-      .then((res) => res.json())
-      .then((data) => {
-        setTuitions(data);
-        setLoading(false);
-      })
-      .catch((err) => {
+    const fetchTuitions = async () => {
+      if (!user) return;
+
+      try {
+        const role = user.role || "Student";
+
+        const res = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/tuitions?role=${role}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.accessToken}`,
+            },
+          }
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch tuitions");
+
+        const data = await res.json();
+        setTuitions(data.tuitions || []);
+      } catch (err) {
         console.error(err);
+        setTuitions([]);
+      } finally {
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchTuitions();
+  }, [user]);
 
   if (loading) return <p className="text-center py-10">Loading tuitions...</p>;
-
-  if (tuitions.length === 0)
+  if (!tuitions || tuitions.length === 0)
     return <p className="text-center py-10">No tuitions available.</p>;
 
   return (
