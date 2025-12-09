@@ -1,65 +1,82 @@
 import { createBrowserRouter } from "react-router";
-import Home from "./../Pages/Home/Home";
 import Root from "../Layouts/Root";
-import Login from "./../Pages/Login/Login";
-import Register from "./../Pages/Register/Register";
-import Tuitions from "./../Pages/Tuitions/Tuitions";
-import Tutors from "./../Pages/Tutors/Tutors";
-import About from "./../Pages/About/About";
-import Contact from "./../Pages/Contact/Contact";
+import Home from "../Pages/Home/Home";
+import Login from "../Pages/Login/Login";
+import Register from "../Pages/Register/Register";
+import Tuitions from "../Pages/Tuitions/Tuitions";
+import Tutors from "../Pages/Tutors/Tutors";
+import About from "../Pages/About/About";
+import Contact from "../Pages/Contact/Contact";
 import TutorProfile from "../Pages/TutorProfile/TutorProfile";
-import StudentDashboard from "../Pages/StudentDashboard/StudentDashboard";
-import TutorDashboard from "../Pages/TutorDashboard/TutorDashboard";
-import AdminDashboard from "../Pages/AdminDashboard/AdminDashboard";
+import PrivateRoute from "./PrivateRoute";
+import StudentDashboard from "./../Pages/dashboard/StudentDashboard";
+import TutorDashboard from "../Pages/dashboard/TutorDashboard";
+import AdminDashboard from "./../Pages/dashboard/AdminDashboard";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: Root,
+    element: <Root />,
     children: [
+      // Public Routes
       {
         index: true,
-        Component: Home,
+        element: <Home />,
       },
       {
         path: "login",
-        Component: Login,
+        element: <Login />,
       },
       {
         path: "register",
-        Component: Register,
+        element: <Register />,
       },
       {
         path: "tuitions",
-        Component: Tuitions,
+        element: <Tuitions />,
       },
       {
         path: "tutors",
-        Component: Tutors,
+        element: <Tutors />,
       },
       {
         path: "about",
-        Component: About,
+        element: <About />,
       },
       {
         path: "contact",
-        Component: Contact,
+        element: <Contact />,
       },
       {
         path: "tutor/:id",
-        Component: TutorProfile,
+        element: <TutorProfile />,
       },
+
       {
         path: "student-dashboard",
-        Component: StudentDashboard,
+        element: (
+          <PrivateRoute allowedRoles={["Student"]}>
+            <StudentDashboard />
+          </PrivateRoute>
+        ),
       },
+
       {
         path: "tutor-dashboard",
-        Component: TutorDashboard,
+        element: (
+          <PrivateRoute allowedRoles={["Tutor"]}>
+            <TutorDashboard />
+          </PrivateRoute>
+        ),
       },
+
       {
         path: "admin-dashboard",
-        Component: AdminDashboard,
+        element: (
+          <PrivateRoute allowedRoles={["Admin"]}>
+            <AdminDashboard />
+          </PrivateRoute>
+        ),
       },
     ],
   },
