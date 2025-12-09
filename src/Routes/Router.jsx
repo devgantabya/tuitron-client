@@ -8,6 +8,9 @@ import Tutors from "./../Pages/Tutors/Tutors";
 import About from "./../Pages/About/About";
 import Contact from "./../Pages/Contact/Contact";
 import TutorProfile from "../Pages/TutorProfile/TutorProfile";
+import StudentDashboard from "../Pages/StudentDashboard/StudentDashboard";
+import TutorDashboard from "../Pages/TutorDashboard/TutorDashboard";
+import AdminDashboard from "../Pages/AdminDashboard/AdminDashboard";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +48,18 @@ export const router = createBrowserRouter([
       {
         path: "tutor/:id",
         Component: TutorProfile,
+      },
+      {
+        path: "student-dashboard",
+        Component: StudentDashboard,
+      },
+      {
+        path: "tutor-dashboard",
+        Component: TutorDashboard,
+      },
+      {
+        path: "admin-dashboard",
+        Component: AdminDashboard,
       },
     ],
   },
