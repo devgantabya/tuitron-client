@@ -1,121 +1,29 @@
-import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router";
-import { toast } from "react-toastify";
+import React, { useState } from "react";
+import { Link } from "react-router";
+import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
+import useAuth from "./../../hooks/useAuth";
 
 export default function Register() {
-  const { createUserWithEmail, signInWithGoogle } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const [form, setForm] = useState({
-    name: "",
-    photo: null,
-    email: "",
-    phone: "",
-    password: "",
-    confirm: "",
-    role: "Student",
-  });
-
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const { registerUser } = useAuth();
 
-  const handleFileChange = (e) => {
-    setForm({ ...form, photo: e.target.files[0] });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!form.name || !form.email || !form.password || !form.phone) {
-      toast.error("Please fill all fields");
-      return;
-    }
-
-    if (!form.photo) {
-      toast.error("Photo is required");
-      return;
-    }
-
-    if (form.password !== form.confirm) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    try {
-      await createUserWithEmail(form.email, form.password);
-
-      const imgForm = new FormData();
-      imgForm.append("image", form.photo);
-
-      const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${
-        import.meta.env.VITE_IMAGE_HOST_KEY
-      }`;
-      const imgRes = await fetch(imgUploadUrl, {
-        method: "POST",
-        body: imgForm,
+  const handleRegistration = (data) => {
+    console.log(data);
+    registerUser(data.email, data.password)
+      .then((result) => {
+        const user = result.user;
+        console.log("Registered User:", user);
+      })
+      .catch((error) => {
+        console.error("Registration Error:", error);
       });
-      const imgData = await imgRes.json();
-      const uploadedImageUrl = imgData.data.display_url;
-
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/users/register`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: form.name,
-            email: form.email,
-            phone: form.phone,
-            role: form.role,
-            image: uploadedImageUrl,
-          }),
-        }
-      );
-
-      const savedUser = await res.json();
-      toast.success("Registration successful!");
-
-      if (savedUser.user.role === "Student") navigate("/student");
-      else if (savedUser.user.role === "Tutor") navigate("/tutor");
-      else if (savedUser.user.role === "Admin") navigate("/admin");
-      else navigate("/");
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithGoogle();
-
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users/google`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: result.user.displayName,
-          email: result.user.email,
-          image: result.user.photoURL,
-          uid: result.user.uid,
-        }),
-      });
-
-      const savedUser = await res.json();
-      toast.success("Login successful!");
-
-      if (savedUser.user.role === "Student") navigate("/student");
-      else if (savedUser.user.role === "Tutor") navigate("/tutor");
-      else if (savedUser.user.role === "Admin") navigate("/admin");
-      else navigate("/");
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message);
-    }
   };
 
   return (
@@ -124,23 +32,21 @@ export default function Register() {
         Create Your Tuitron Account
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit(handleRegistration)} className="space-y-5">
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Full Name
           </label>
           <input
             type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
+            {...register("name")}
             placeholder="Enter your full name"
             className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
             required
           />
         </div>
 
-        <div>
+        {/* <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Photo
           </label>
@@ -151,7 +57,7 @@ export default function Register() {
             className="file-input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
             required
           />
-        </div>
+        </div> */}
 
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
@@ -159,13 +65,14 @@ export default function Register() {
           </label>
           <input
             type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
+            {...register("email", { required: true })}
             placeholder="Enter your email"
             className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
             required
           />
+          {errors.email?.type === "required" && (
+            <span className="text-red-600 text-sm">This field is required</span>
+          )}
         </div>
 
         <div>
@@ -174,16 +81,14 @@ export default function Register() {
           </label>
           <input
             type="text"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
+            {...register("phone")}
             placeholder="Phone number"
             className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
             required
           />
         </div>
 
-        <div>
+        {/* <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Select Role
           </label>
@@ -196,7 +101,7 @@ export default function Register() {
             <option value="Student">Student</option>
             <option value="Tutor">Tutor</option>
           </select>
-        </div>
+        </div> */}
 
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
@@ -205,13 +110,31 @@ export default function Register() {
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              name="password"
-              value={form.password}
-              onChange={handleChange}
+              {...register("password", {
+                required: true,
+                minLength: 6,
+                pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/,
+              })}
               placeholder="Enter password"
               className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
               required
             />
+
+            {errors.password?.type === "required" && (
+              <span className="text-red-600 text-sm">Password is Required</span>
+            )}
+            {errors.password?.type === "minLength" && (
+              <span className="text-red-600 text-sm">
+                Password must be at least 6 characters
+              </span>
+            )}
+            {errors.password?.type === "pattern" && (
+              <span className="text-red-600 text-sm">
+                Password must include uppercase, lowercase, number, and special
+                character
+              </span>
+            )}
+
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -222,7 +145,7 @@ export default function Register() {
           </div>
         </div>
 
-        <div>
+        {/* <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Confirm Password
           </label>
@@ -244,7 +167,7 @@ export default function Register() {
               {showConfirm ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
             </button>
           </div>
-        </div>
+        </div> */}
 
         <button
           type="submit"
@@ -256,12 +179,12 @@ export default function Register() {
 
       <div className="divider my-4">OR</div>
 
-      <button
+      {/* <button
         onClick={handleGoogleLogin}
         className="btn bg-white text-black border-[#e5e5e5] w-full hover:bg-gray-100 flex items-center justify-center space-x-2"
       >
         Signup with Google
-      </button>
+      </button> */}
 
       <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-4">
         Already have an account?{" "}

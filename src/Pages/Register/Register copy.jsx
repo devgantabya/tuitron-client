@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
 
-export default function Register() {
+export default function Register2() {
   const { createUserWithEmail, signInWithGoogle } = useContext(AuthContext);
   const navigate = useNavigate();
 

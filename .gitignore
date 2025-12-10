@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 .env
+Login copy.jsx
+Register copy.jsx
 
 # Editor directories and files
 .vscode/*
