@@ -35,19 +35,27 @@ const Navbar = () => {
   };
 
   const getDashboardLink = () => {
-    if (!user || !user.role) return "/";
-    if (user.role.toLowerCase() === "student") return "/student";
-    if (user.role.toLowerCase() === "tutor") return "/tutor";
-    if (user.role.toLowerCase() === "admin") return "/admin";
-    return "/";
+    if (!user?.role) return "/";
+    switch (user.role.toLowerCase()) {
+      case "student":
+        return "/student";
+      case "tutor":
+        return "/tutor";
+      case "admin":
+        return "/admin";
+      default:
+        return "/";
+    }
   };
 
+  console.log("USER:", user);
+  console.log("ROLE:", user?.role);
+
   const getDashboardLabel = () => {
-    if (!user || !user.role) return "Dashboard";
-    if (user.role.toLowerCase() === "student") return "Student Dashboard";
-    if (user.role.toLowerCase() === "tutor") return "Tutor Dashboard";
-    if (user.role.toLowerCase() === "admin") return "Admin Dashboard";
-    return "Dashboard";
+    if (!user?.role) return "Dashboard";
+    return `${
+      user.role.charAt(0).toUpperCase() + user.role.slice(1)
+    } Dashboard`;
   };
 
   const userName = user?.displayName || user?.name || "User";

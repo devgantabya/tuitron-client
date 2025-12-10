@@ -2,7 +2,6 @@ import React from "react";
 import { Link, Outlet } from "react-router";
 import logoLight from "../../assets/logo-primary.png";
 import logoDark from "../../assets/logo-white.png";
-import Footer from "../../Components/Footer/Footer";
 
 const AuthLayout = () => {
   return (
@@ -22,7 +21,6 @@ const AuthLayout = () => {
         </div>
       </div>
       <Outlet />
-      <Footer />
     </div>
   );
 };

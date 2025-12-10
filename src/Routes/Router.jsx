@@ -26,14 +26,6 @@ export const router = createBrowserRouter([
         Component: Home,
       },
       {
-        path: "login",
-        Component: Login,
-      },
-      {
-        path: "register",
-        Component: Register,
-      },
-      {
         path: "tuitions",
         Component: Tuitions,
       },
@@ -67,6 +59,14 @@ export const router = createBrowserRouter([
     path: "/",
     Component: AuthLayout,
     children: [
+      {
+        path: "login",
+        Component: Login,
+      },
+      {
+        path: "register",
+        Component: Register,
+      },
       {
         path: "student",
         element: (

@@ -181,7 +181,7 @@ export default function StudentDashboard() {
       if (!res.ok) return toast.error("Profile update failed");
 
       toast.success("Profile updated!");
-      setUser({ ...user }); // refresh context
+      setUser({ ...user });
     } catch (err) {
       console.log(err);
     }
@@ -302,7 +302,6 @@ export default function StudentDashboard() {
               Delete
             </button>
 
-            {/* ✅ View Applications */}
             <button
               onClick={() => fetchApplications(t._id)}
               className="bg-green-500 text-white px-2 py-1 rounded"
