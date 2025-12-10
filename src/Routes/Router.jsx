@@ -14,6 +14,7 @@ import AdminDashboard from "./../Pages/dashboard/AdminDashboard";
 import TuitionDetails from "./../Pages/TuitionDetails/TuitionDetails";
 import RootLayout from "../Layouts/RootLayout/RootLayout";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
+import Error404 from "../Pages/404Error/404Error";
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ export const router = createBrowserRouter([
       {
         path: "tutor/:id",
         Component: TutorProfile,
+      },
+      {
+        path: "*",
+        Component: Error404,
       },
     ],
   },
