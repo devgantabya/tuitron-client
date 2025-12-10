@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import TuitionCard from "../TuitionCard/TuitionCard";
+import { motion } from "framer-motion";
 
 const LatestTuitions = () => {
   const [tuitions, setTuitions] = useState([]);
@@ -11,6 +12,12 @@ const LatestTuitions = () => {
       .then((data) => setTuitions(data.tuitions || []))
       .catch((err) => console.log(err));
   }, []);
+
+  // Animation variants for fade-up
+  const fadeUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-16">
@@ -24,9 +31,20 @@ const LatestTuitions = () => {
         </a>
       </div>
 
-      <div className="grid md:grid-cols-4 gap-6">
+      <motion.div
+        className="grid md:grid-cols-4 gap-6"
+        initial="hidden"
+        animate="visible"
+        transition={{ staggerChildren: 0.15 }}
+      >
         {tuitions.slice(0, 4).map((t) => (
-          <TuitionCard key={t._id} tuition={t} />
+          <motion.div
+            key={t._id}
+            variants={fadeUp}
+            transition={{ duration: 0.5 }}
+          >
+            <TuitionCard tuition={t} />
+          </motion.div>
         ))}
 
         {tuitions.length === 0 && (
@@ -34,7 +52,7 @@ const LatestTuitions = () => {
             No latest tuitions found.
           </p>
         )}
-      </div>
+      </motion.div>
     </section>
   );
 };
