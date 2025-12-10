@@ -2,16 +2,26 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { Link } from "react-router";
 import footerLogoLight from "../../assets/logo-primary.png";
+import footerLogoDark from "../../assets/logo-white.png";
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-gray-200 bg-gray-100 dark:bg-gray-900 dark:border-gray-700 mt-10">
+    <footer className="w-full border-t border-gray-200 bg-gray-100 dark:bg-gray-900 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <Link
           to="/"
           className="text-lg font-semibold text-gray-900 dark:text-white"
         >
-          <img src={footerLogoLight} alt="Tuitron" className="h-8" />
+          <img
+            src={footerLogoLight}
+            alt="Tuitron"
+            className="h-8 dark:hidden"
+          />
+          <img
+            src={footerLogoDark}
+            alt="Tuitron"
+            className="h-8 hidden dark:block"
+          />
         </Link>
 
         <div className="flex flex-wrap items-center gap-4 text-sm">

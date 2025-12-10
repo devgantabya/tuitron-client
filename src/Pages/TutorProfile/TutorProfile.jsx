@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import {
   FaStar,
@@ -9,35 +10,31 @@ import {
 
 export default function TutorProfile() {
   const { id } = useParams();
+  const [tutor, setTutor] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Temporary static data
-  const tutor = {
-    name: "Rahim Hasan",
-    subject: "Math & Physics",
-    experience: "4+ Years",
-    rating: 4.8,
-    location: "Dhaka, Bangladesh",
-    bio: "Dedicated and friendly tutor helping students achieve strong conceptual understanding and exam excellence.",
-    skills: [
-      "Algebra",
-      "Calculus",
-      "Physics",
-      "SSC/HSC Prep",
-      "Conceptual Teaching",
-    ],
-    preferences: {
-      type: "Home & Online Tuition",
-      salary: "8,000 - 12,000 BDT",
-      availability: "5 days/week",
-      areas: ["Uttara", "Banani", "Mirpur"],
-    },
-  };
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BASE_URL}/tutors/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setTutor(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) return <p className="text-gray-600">Loading profile...</p>;
+  if (!tutor) return <p className="text-gray-600">Tutor not found.</p>;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center gap-6 mb-10">
         <img
-          src={`https://api.dicebear.com/7.x/initials/svg?seed=${tutor.name}`}
+          src={tutor.tutor_image}
           alt={tutor.name}
           className="w-32 h-32 rounded-xl border object-cover"
         />
@@ -46,11 +43,11 @@ export default function TutorProfile() {
           <h1 className="text-3xl font-bold">{tutor.name}</h1>
 
           <p className="text-gray-600 dark:text-gray-300 flex items-center gap-2 mt-1">
-            <FaBook /> {tutor.subject}
+            <FaBook /> {tutor.subjectSpecialization?.join(", ")}
           </p>
 
           <p className="text-gray-600 dark:text-gray-300 flex items-center gap-2 mt-1">
-            <FaChalkboardTeacher /> {tutor.experience} Experience
+            <FaChalkboardTeacher /> {tutor.experienceYears}+ Years Experience
           </p>
 
           <p className="text-gray-600 dark:text-gray-300 flex items-center gap-2 mt-1">
@@ -75,17 +72,19 @@ export default function TutorProfile() {
         </div>
       </div>
 
+      {/* About */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold mb-2">About Me</h2>
         <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-          {tutor.bio}
+          {tutor.about}
         </p>
       </div>
 
+      {/* Skills */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Skills</h2>
         <div className="flex flex-wrap gap-3">
-          {tutor.skills.map((skill, index) => (
+          {tutor.skills?.map((skill, index) => (
             <span
               key={index}
               className="px-4 py-1.5 bg-blue-600 text-white rounded-full text-sm"
@@ -96,6 +95,7 @@ export default function TutorProfile() {
         </div>
       </div>
 
+      {/* Tuition Preferences */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold mb-4">Tuition Preferences</h2>
 
@@ -103,28 +103,28 @@ export default function TutorProfile() {
           <div className="p-4 border rounded-xl bg-white dark:bg-gray-800 shadow-sm">
             <h3 className="font-semibold">Tuition Type</h3>
             <p className="text-gray-600 dark:text-gray-300">
-              {tutor.preferences.type}
+              {tutor.tuitionPreferences?.tuitionType}
             </p>
           </div>
 
           <div className="p-4 border rounded-xl bg-white dark:bg-gray-800 shadow-sm">
             <h3 className="font-semibold">Expected Salary</h3>
             <p className="text-gray-600 dark:text-gray-300">
-              {tutor.preferences.salary}
+              {tutor.tuitionPreferences?.expectedSalary}
             </p>
           </div>
 
           <div className="p-4 border rounded-xl bg-white dark:bg-gray-800 shadow-sm">
             <h3 className="font-semibold">Availability</h3>
             <p className="text-gray-600 dark:text-gray-300">
-              {tutor.preferences.availability}
+              {tutor.tuitionPreferences?.availability}
             </p>
           </div>
 
           <div className="p-4 border rounded-xl bg-white dark:bg-gray-800 shadow-sm">
             <h3 className="font-semibold">Preferred Areas</h3>
             <div className="flex flex-wrap gap-2 mt-1">
-              {tutor.preferences.areas.map((area, index) => (
+              {tutor.tuitionPreferences?.preferredAreas?.map((area, index) => (
                 <span
                   key={index}
                   className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm"
@@ -137,6 +137,7 @@ export default function TutorProfile() {
         </div>
       </div>
 
+      {/* Contact Button */}
       <div className="text-center mt-12">
         <button className="px-6 py-3 bg-blue-600 text-white rounded-xl flex items-center gap-2 mx-auto hover:bg-blue-700">
           <FaEnvelope /> Contact Tutor

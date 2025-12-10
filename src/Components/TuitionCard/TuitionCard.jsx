@@ -4,7 +4,6 @@ import {
   FaBook,
   FaMoneyBillWave,
   FaClock,
-  FaCircle,
 } from "react-icons/fa";
 
 export default function TuitionCard({ tuition }) {

@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import TuitionCard from "../TuitionCard/TuitionCard";
+import TutorCard from "../TutorCard/TutorCard";
 import { motion } from "framer-motion";
+import { Link } from "react-router";
 
-const LatestTuitions = () => {
-  const [tuitions, setTuitions] = useState([]);
+const LatestTutors = () => {
+  const [tutors, setTutors] = useState([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/latest-tuitions`)
+    fetch(`${import.meta.env.VITE_BASE_URL}/latest-tutors`)
       .then((res) => res.json())
-      .then((data) => setTuitions(data.tuitions || []))
+      .then((data) => setTutors(data.tutors || []))
       .catch((err) => console.log(err));
   }, []);
 
@@ -21,15 +22,15 @@ const LatestTuitions = () => {
   return (
     <section className="max-w-7xl mx-auto px-4 py-16">
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-          Latest Tuitions
+        <h2 className="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">
+          Latest Tutors
         </h2>
-        <a
-          href="/tuitions"
+        <Link
+          to="/tutors"
           className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
         >
           See All <FaArrowRight className="ml-2" />
-        </a>
+        </Link>
       </div>
 
       <motion.div
@@ -38,19 +39,19 @@ const LatestTuitions = () => {
         animate="visible"
         transition={{ staggerChildren: 0.15 }}
       >
-        {tuitions.slice(0, 4).map((t) => (
+        {tutors.slice(0, 4).map((tutor) => (
           <motion.div
-            key={t._id}
+            key={tutor._id}
             variants={fadeUp}
             transition={{ duration: 0.5 }}
           >
-            <TuitionCard tuition={t} />
+            <TutorCard tutor={tutor} />
           </motion.div>
         ))}
 
-        {tuitions.length === 0 && (
+        {tutors.length === 0 && (
           <p className="text-gray-500 col-span-3 text-center">
-            No latest tuitions found.
+            No latest tutors found.
           </p>
         )}
       </motion.div>
@@ -58,4 +59,4 @@ const LatestTuitions = () => {
   );
 };
 
-export default LatestTuitions;
+export default LatestTutors;

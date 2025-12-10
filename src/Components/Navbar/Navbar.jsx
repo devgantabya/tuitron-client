@@ -195,15 +195,15 @@ const Navbar = () => {
                 </svg>
               </button>
               {dropdownOpen && (
-                <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box absolute right-0 mt-3 w-52 p-2 shadow z-50">
-                  <li className="font-semibold text-gray-700 px-3 py-2 border-b">
+                <ul className="menu menu-sm dropdown-content bg-base-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-box absolute right-0 mt-3 w-52 p-2 shadow z-50">
+                  <li className="font-semibold text-gray-700 dark:text-gray-200 px-3 py-2 border-b border-gray-300 dark:border-gray-700">
                     {userName}
                   </li>
                   <li>
                     <Link
                       to={getDashboardLink()}
                       onClick={() => setDropdownOpen(false)}
-                      className="text-gray-700 w-full flex gap-2 items-center"
+                      className="text-gray-700 dark:text-gray-200 w-full flex gap-2 items-center"
                     >
                       <span className="text-lg">📊</span> {getDashboardLabel()}
                     </Link>
@@ -214,7 +214,7 @@ const Navbar = () => {
                         handleLogout();
                         setDropdownOpen(false);
                       }}
-                      className="text-red-600 w-full text-base text-left hover:bg-red-50 rounded-lg"
+                      className="text-red-600 dark:text-red-400 w-full text-base text-left hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg"
                     >
                       Logout
                     </button>
@@ -243,7 +243,7 @@ const Navbar = () => {
       {menuOpen && (
         <ul
           ref={menuRef}
-          className="menu menu-sm bg-white rounded-box p-2 shadow absolute top-full left-0 w-full lg:hidden z-40"
+          className="menu menu-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-box p-2 shadow absolute top-full left-0 w-full lg:hidden z-40"
         >
           {links}
         </ul>

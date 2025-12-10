@@ -32,7 +32,7 @@ export default function TuitionDetails() {
   if (!tuition) return <p className="text-center py-10">Tuition not found</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto p-6">
       <h1 className="text-2xl font-bold">{tuition.subject}</h1>
 
       <div className="mt-4 space-y-3">
