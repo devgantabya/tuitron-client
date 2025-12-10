@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router";
 import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
 import logoLight from "../../assets/logo-primary.png";
@@ -8,19 +8,17 @@ import { toast } from "react-toastify";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { user, signOutUser } = use(AuthContext);
+  const { user, signOutUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const menuRef = useRef();
   const dropdownRef = useRef();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (menuRef.current && !menuRef.current.contains(event.target))
         setMenuOpen(false);
-      }
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target))
         setDropdownOpen(false);
-      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -38,23 +36,25 @@ const Navbar = () => {
 
   const getDashboardLink = () => {
     if (!user || !user.role) return "/";
-
-    if (user.role === "student") return "/student";
-    if (user.role === "tutor") return "/tutor";
-    if (user.role === "admin") return "/admin";
-
+    if (user.role.toLowerCase() === "student") return "/student";
+    if (user.role.toLowerCase() === "tutor") return "/tutor";
+    if (user.role.toLowerCase() === "admin") return "/admin";
     return "/";
   };
 
   const getDashboardLabel = () => {
     if (!user || !user.role) return "Dashboard";
-
-    if (user.role === "student") return "Student Dashboard";
-    if (user.role === "tutor") return "Tutor Dashboard";
-    if (user.role === "admin") return "Admin Dashboard";
-
+    if (user.role.toLowerCase() === "student") return "Student Dashboard";
+    if (user.role.toLowerCase() === "tutor") return "Tutor Dashboard";
+    if (user.role.toLowerCase() === "admin") return "Admin Dashboard";
     return "Dashboard";
   };
+
+  const userName = user?.displayName || user?.name || "User";
+  const userImage =
+    user?.photoURL ||
+    user?.image ||
+    "https://i.ibb.co/fGMNLM9Z/Sample-User-Icon.png";
 
   const links = (
     <>
@@ -72,7 +72,6 @@ const Navbar = () => {
           Home
         </NavLink>
       </li>
-
       <li onClick={() => setMenuOpen(false)}>
         <NavLink
           to="/tuitions"
@@ -87,7 +86,6 @@ const Navbar = () => {
           Tuitions
         </NavLink>
       </li>
-
       <li onClick={() => setMenuOpen(false)}>
         <NavLink
           to="/tutors"
@@ -102,7 +100,6 @@ const Navbar = () => {
           Tutors
         </NavLink>
       </li>
-
       <li onClick={() => setMenuOpen(false)}>
         <NavLink
           to="/about"
@@ -117,7 +114,6 @@ const Navbar = () => {
           About
         </NavLink>
       </li>
-
       <li onClick={() => setMenuOpen(false)}>
         <NavLink
           to="/contact"
@@ -159,7 +155,6 @@ const Navbar = () => {
               />
             </svg>
           </button>
-
           <Link to="/" className="flex items-center gap-2">
             <img src={logoLight} alt="Tuitron" className="h-8 dark:hidden" />
             <img
@@ -169,11 +164,9 @@ const Navbar = () => {
             />
           </Link>
         </div>
-
         <div className="navbar-center hidden md:flex">
           <ul className="hidden md:flex items-center gap-6">{links}</ul>
         </div>
-
         <div className="navbar-end space-x-3">
           {user ? (
             <div className="dropdown dropdown-end relative" ref={dropdownRef}>
@@ -182,16 +175,8 @@ const Navbar = () => {
                 className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-base-200"
               >
                 <div className="w-10 h-10 rounded-full bg-green-100 border border-blue-600 overflow-hidden">
-                  <img
-                    src={
-                      user.photoURL ||
-                      "https://i.ibb.co.com/fGMNLM9Z/Sample-User-Icon.png"
-                    }
-                    alt={user.displayName || "User"}
-                  />
+                  <img src={userImage} alt={userName} />
                 </div>
-
-                {/* Dropdown arrow */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-4 w-4 transition-transform ${
@@ -209,13 +194,11 @@ const Navbar = () => {
                   />
                 </svg>
               </button>
-
               {dropdownOpen && (
                 <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box absolute right-0 mt-3 w-52 p-2 shadow z-50">
                   <li className="font-semibold text-gray-700 px-3 py-2 border-b">
-                    {user.displayName || "User"}
+                    {userName}
                   </li>
-
                   <li>
                     <Link
                       to={getDashboardLink()}
@@ -247,7 +230,6 @@ const Navbar = () => {
               >
                 Login
               </NavLink>
-
               <NavLink
                 to="/register"
                 className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -258,7 +240,6 @@ const Navbar = () => {
           )}
         </div>
       </div>
-
       {menuOpen && (
         <ul
           ref={menuRef}

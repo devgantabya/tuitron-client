@@ -16,29 +16,58 @@ const AuthProvider = ({ children }) => {
 
   const googleProvider = new GoogleAuthProvider();
 
-  const createUserWithEmail = (email, password) => {
-    setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
+  const normalizeUser = (userData) => {
+    return {
+      ...userData,
+      displayName: userData.displayName || userData.name || "User",
+      photoURL:
+        userData.photoURL ||
+        userData.image ||
+        "https://i.ibb.co/fGMNLM9Z/Sample-User-Icon.png",
+    };
   };
 
-  const signInUser = (email, password) => {
+  const createUserWithEmail = async (email, password, extraData = {}) => {
     setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password);
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    const normalized = normalizeUser({ ...result.user, ...extraData });
+    setUser(normalized);
+    setLoading(false);
+    return result;
   };
 
-  const signInWithGoogle = () => {
+  const signInUser = async (email, password, extraData = {}) => {
     setLoading(true);
-    return signInWithPopup(auth, googleProvider);
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    const normalized = normalizeUser({ ...result.user, ...extraData });
+    setUser(normalized);
+    setLoading(false);
+    return result;
   };
 
-  const signOutUser = () => {
+  const signInWithGoogle = async () => {
     setLoading(true);
-    return signOut(auth);
+    const result = await signInWithPopup(auth, googleProvider);
+    const normalized = normalizeUser(result.user);
+    setUser(normalized);
+    setLoading(false);
+    return result;
+  };
+
+  const signOutUser = async () => {
+    setLoading(true);
+    await signOut(auth);
+    setUser(null);
+    setLoading(false);
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      if (currentUser) {
+        setUser(normalizeUser(currentUser));
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
     return () => unsubscribe();

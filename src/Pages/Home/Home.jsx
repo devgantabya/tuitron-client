@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { FaChalkboardTeacher, FaUserGraduate, FaSearch } from "react-icons/fa";
+import LatestTuitions from "../../Components/LatestTuitions/LatestTuitions";
 
 export default function Home() {
   return (
@@ -40,7 +41,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 py-16">
+      <LatestTuitions />
+
+      <section className="max-w-7xl mx-auto px-4 py-16">
         <h2 className="text-3xl font-semibold text-center mb-10">
           Why Choose Tuitron?
         </h2>

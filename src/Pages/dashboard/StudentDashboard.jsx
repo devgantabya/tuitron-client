@@ -1,18 +1,23 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
+import { useNavigate } from "react-router";
 
 export default function StudentDashboard() {
   const [tuitions, setTuitions] = useState([]);
   const [selectedTuition, setSelectedTuition] = useState(null);
   const [applications, setApplications] = useState([]);
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     subject: "",
     classLevel: "",
     location: "",
     budget: "",
+    schedule: "",
+    details: "",
   });
+
+  const navigate = useNavigate();
 
   const authHeader = useMemo(
     () => ({
@@ -21,17 +26,6 @@ export default function StudentDashboard() {
     }),
     [user?.accessToken]
   );
-  const fetchTuitions = useCallback(async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/student`, {
-        headers: authHeader,
-      });
-      const data = await res.json();
-      setTuitions(data);
-    } catch (err) {
-      console.log(err);
-    }
-  }, [authHeader]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,12 +42,31 @@ export default function StudentDashboard() {
       if (!res.ok) return toast.error("Failed to post tuition");
 
       toast.success("Tuition posted!");
-      setFormData({ subject: "", classLevel: "", location: "", budget: "" });
-      fetchTuitions();
+      setFormData({
+        subject: "",
+        classLevel: "",
+        location: "",
+        budget: "",
+        schedule: "",
+        details: "",
+      });
+      await fetchTuitionsHelper();
     } catch (err) {
       console.log(err);
     }
   };
+
+  const fetchTuitionsHelper = useCallback(async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/student`, {
+        headers: authHeader,
+      });
+      const data = await res.json();
+      setTuitions(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [authHeader]);
 
   const updateTuition = async (id) => {
     try {
@@ -70,7 +83,15 @@ export default function StudentDashboard() {
 
       toast.success("Updated successfully!");
       setSelectedTuition(null);
-      fetchTuitions();
+      setFormData({
+        subject: "",
+        classLevel: "",
+        location: "",
+        budget: "",
+        schedule: "",
+        details: "",
+      });
+      await fetchTuitionsHelper();
     } catch (err) {
       console.log(err);
     }
@@ -91,7 +112,7 @@ export default function StudentDashboard() {
       if (!res.ok) return toast.error("Delete failed");
 
       toast.success("Deleted");
-      fetchTuitions();
+      await fetchTuitionsHelper();
     } catch (err) {
       console.log(err);
     }
@@ -112,8 +133,20 @@ export default function StudentDashboard() {
     }
   };
 
-  const handleApplication = async (tuitionId, appId, action) => {
+  const handleApplication = async (
+    tuitionId,
+    appId,
+    action,
+    expectedSalary
+  ) => {
     try {
+      if (action === "approve") {
+        navigate(
+          `/checkout?tuitionId=${tuitionId}&applicationId=${appId}&amount=${expectedSalary}`
+        );
+        return;
+      }
+
       const res = await fetch(
         `${
           import.meta.env.VITE_BASE_URL
@@ -127,16 +160,40 @@ export default function StudentDashboard() {
 
       if (!res.ok) return toast.error("Action failed");
 
-      toast.success(`Application ${action}d`);
+      toast.success("Application rejected");
       fetchApplications(tuitionId);
     } catch (err) {
       console.log(err);
     }
   };
 
+  const handleProfileUpdate = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/users/${user._id}`,
+        {
+          method: "PUT",
+          headers: authHeader,
+          body: JSON.stringify({ name: user.name, image: user.image }),
+        }
+      );
+
+      if (!res.ok) return toast.error("Profile update failed");
+
+      toast.success("Profile updated!");
+      setUser({ ...user }); // refresh context
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleFormSubmit = () => {
+    selectedTuition ? updateTuition(selectedTuition._id) : createTuition();
+  };
+
   useEffect(() => {
-    fetchTuitions();
-  }, [fetchTuitions]);
+    fetchTuitionsHelper();
+  }, [authHeader, fetchTuitionsHelper]);
 
   return (
     <div className="p-6">
@@ -183,12 +240,25 @@ export default function StudentDashboard() {
           className="border p-2 w-full mb-2"
         />
 
+        <input
+          type="text"
+          name="schedule"
+          placeholder="Schedule"
+          value={formData.schedule}
+          onChange={handleInputChange}
+          className="border p-2 w-full mb-2"
+        />
+
+        <textarea
+          name="details"
+          placeholder="Additional details"
+          value={formData.details}
+          onChange={handleInputChange}
+          className="border p-2 w-full mb-2"
+        />
+
         <button
-          onClick={() =>
-            selectedTuition
-              ? updateTuition(selectedTuition._id)
-              : createTuition()
-          }
+          onClick={handleFormSubmit}
           className="bg-blue-500 text-white px-4 py-2 rounded"
         >
           {selectedTuition ? "Update Tuition" : "Post Tuition"}
@@ -211,7 +281,14 @@ export default function StudentDashboard() {
             <button
               onClick={() => {
                 setSelectedTuition(t);
-                setFormData(t);
+                setFormData({
+                  subject: t.subject,
+                  classLevel: t.classLevel,
+                  location: t.location,
+                  budget: t.budget,
+                  schedule: t.schedule || "",
+                  details: t.details || "",
+                });
               }}
               className="bg-yellow-400 px-2 py-1 rounded"
             >
@@ -225,6 +302,7 @@ export default function StudentDashboard() {
               Delete
             </button>
 
+            {/* ✅ View Applications */}
             <button
               onClick={() => fetchApplications(t._id)}
               className="bg-green-500 text-white px-2 py-1 rounded"
@@ -244,7 +322,7 @@ export default function StudentDashboard() {
               <div>
                 <p>
                   <strong>{app.name}</strong> | {app.qualifications} |{" "}
-                  {app.experience}
+                  {app.experience} | Expected: {app.expected_salary}
                 </p>
                 <p>Status: {app.status}</p>
               </div>
@@ -253,7 +331,12 @@ export default function StudentDashboard() {
                 <div className="flex gap-2">
                   <button
                     onClick={() =>
-                      handleApplication(selectedTuition._id, app._id, "approve")
+                      handleApplication(
+                        selectedTuition._id,
+                        app._id,
+                        "approve",
+                        app.expected_salary
+                      )
                     }
                     className="bg-green-500 text-white px-2 py-1 rounded"
                   >
@@ -274,6 +357,30 @@ export default function StudentDashboard() {
           ))}
         </div>
       )}
+
+      <div className="mt-6 p-4 border">
+        <h2 className="font-semibold mb-2">Profile Settings</h2>
+        <input
+          type="text"
+          placeholder="Name"
+          value={user?.name || ""}
+          onChange={(e) => setUser({ ...user, name: e.target.value })}
+          className="border p-2 w-full mb-2"
+        />
+        <input
+          type="text"
+          placeholder="Photo URL"
+          value={user?.image || ""}
+          onChange={(e) => setUser({ ...user, image: e.target.value })}
+          className="border p-2 w-full mb-2"
+        />
+        <button
+          onClick={handleProfileUpdate}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Update Profile
+        </button>
+      </div>
     </div>
   );
 }

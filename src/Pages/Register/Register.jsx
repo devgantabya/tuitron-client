@@ -10,43 +10,37 @@ export default function Register() {
 
   const [form, setForm] = useState({
     name: "",
+    photo: null,
     email: "",
     phone: "",
     password: "",
     confirm: "",
     role: "Student",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const saveUserToDB = async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          role: form.role,
-        }),
-      });
-      const data = await res.json();
-      return data.user;
-    } catch (err) {
-      console.error(err);
-    }
+  const handleFileChange = (e) => {
+    setForm({ ...form, photo: e.target.files[0] });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!form.name || !form.email || !form.password || !form.phone) {
       toast.error("Please fill all fields");
       return;
     }
+
+    if (!form.photo) {
+      toast.error("Photo is required");
+      return;
+    }
+
     if (form.password !== form.confirm) {
       toast.error("Passwords do not match");
       return;
@@ -55,12 +49,40 @@ export default function Register() {
     try {
       await createUserWithEmail(form.email, form.password);
 
-      const savedUser = await saveUserToDB();
+      const imgForm = new FormData();
+      imgForm.append("image", form.photo);
+
+      const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${
+        import.meta.env.VITE_IMAGE_HOST_KEY
+      }`;
+      const imgRes = await fetch(imgUploadUrl, {
+        method: "POST",
+        body: imgForm,
+      });
+      const imgData = await imgRes.json();
+      const uploadedImageUrl = imgData.data.display_url;
+
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/users/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            role: form.role,
+            image: uploadedImageUrl,
+          }),
+        }
+      );
+
+      const savedUser = await res.json();
       toast.success("Registration successful!");
 
-      if (savedUser.role === "Student") navigate("/student");
-      else if (savedUser.role === "Tutor") navigate("/tutor");
-      else if (savedUser.role === "Admin") navigate("/admin");
+      if (savedUser.user.role === "Student") navigate("/student");
+      else if (savedUser.user.role === "Tutor") navigate("/tutor");
+      else if (savedUser.user.role === "Admin") navigate("/admin");
       else navigate("/");
     } catch (err) {
       console.error(err);
@@ -71,20 +93,18 @@ export default function Register() {
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithGoogle();
-      const token = await result.user.getIdToken();
 
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users/google`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: result.user.displayName,
           email: result.user.email,
           image: result.user.photoURL,
+          uid: result.user.uid,
         }),
       });
+
       const savedUser = await res.json();
       toast.success("Login successful!");
 
@@ -119,6 +139,20 @@ export default function Register() {
             required
           />
         </div>
+
+        <div>
+          <label className="text-sm text-gray-700 dark:text-gray-300">
+            Photo
+          </label>
+          <input
+            type="file"
+            name="photo"
+            onChange={handleFileChange}
+            className="file-input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+            required
+          />
+        </div>
+
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Email
@@ -133,6 +167,7 @@ export default function Register() {
             required
           />
         </div>
+
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Phone Number
@@ -147,6 +182,7 @@ export default function Register() {
             required
           />
         </div>
+
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Select Role
@@ -161,6 +197,7 @@ export default function Register() {
             <option value="Tutor">Tutor</option>
           </select>
         </div>
+
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Password
@@ -184,6 +221,7 @@ export default function Register() {
             </button>
           </div>
         </div>
+
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Confirm Password
