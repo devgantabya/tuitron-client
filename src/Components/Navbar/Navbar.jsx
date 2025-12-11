@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router";
-import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
 import logoLight from "../../assets/logo-primary.png";
 import logoDark from "../../assets/logo-white.png";
 import { toast } from "react-toastify";
+import useAuth from "../../hooks/useAuth";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { user, signOutUser } = useContext(AuthContext);
+  const { user, signOutUser } = useAuth();
   const navigate = useNavigate();
   const menuRef = useRef();
   const dropdownRef = useRef();
@@ -24,14 +24,15 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await signOutUser();
-      toast.success("Logged out successfully!");
-      navigate("/login");
-    } catch {
-      toast.error("Logout failed! Try again.");
-    }
+  const handleLogout = () => {
+    signOutUser()
+      .then(() => {
+        toast.success("Logged out successfully!");
+        navigate("/login");
+      })
+      .catch(() => {
+        toast.error("Logout failed! Try again.");
+      });
   };
 
   const getDashboardLink = () => {

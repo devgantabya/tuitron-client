@@ -1,19 +1,20 @@
-import { useContext } from "react";
+import React from "react";
+import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router";
-import { AuthContext } from "../Contexts/AuthContext/AuthContext";
 
-export default function PrivateRoute({ children, allowedRoles }) {
-  const { user, loading } = useContext(AuthContext);
-
-  if (loading) return <div>Loading...</div>;
-
-  if (!user) return <Navigate to="/login" replace />;
-
-  const normalizedRole =
-    user.role?.charAt(0).toUpperCase() + user.role?.slice(1);
-
-  if (!allowedRoles.includes(normalizedRole))
-    return <Navigate to="/" replace />;
-
+const PrivateRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <span className="loading loading-spinner text-blue-600"></span>
+      </div>
+    );
+  }
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
   return children;
-}
+};
+
+export default PrivateRoute;

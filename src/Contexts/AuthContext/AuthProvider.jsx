@@ -11,65 +11,46 @@ import {
 } from "firebase/auth";
 
 const AuthProvider = ({ children }) => {
-  // const [user, setUser] = useState(null);
-  // const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // const googleProvider = new GoogleAuthProvider();
+  const googleProvider = new GoogleAuthProvider();
 
   const registerUser = (email, password) => {
+    setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
   const signInUser = (email, password) => {
+    setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // const normalizeUser = (userData) => {
-  //   return {
-  //     ...userData,
-  //     displayName: userData.displayName || userData.name || "User",
-  //     photoURL:
-  //       userData.photoURL ||
-  //       userData.image ||
-  //       "https://i.ibb.co/fGMNLM9Z/Sample-User-Icon.png",
-  //   };
-  // };
+  const signInWithGoogle = () => {
+    setLoading(true);
+    return signInWithPopup(auth, googleProvider);
+  };
 
-  // const signInWithGoogle = async () => {
-  //   setLoading(true);
-  //   const result = await signInWithPopup(auth, googleProvider);
-  //   const normalized = normalizeUser(result.user);
-  //   setUser(normalized);
-  //   setLoading(false);
-  //   return result;
-  // };
+  const signOutUser = () => {
+    setLoading(true);
+    return signOut(auth);
+  };
 
-  // const signOutUser = async () => {
-  //   setLoading(true);
-  //   await signOut(auth);
-  //   setUser(null);
-  //   setLoading(false);
-  // };
-
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-  //     if (currentUser) {
-  //       setUser(normalizeUser(currentUser));
-  //     } else {
-  //       setUser(null);
-  //     }
-  //     setLoading(false);
-  //   });
-  //   return () => unsubscribe();
-  // }, []);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const authInfo = {
+    user,
+    loading,
     registerUser,
     signInUser,
-    // signInWithGoogle,
-    // signOutUser,
-    // user,
-    // loading,
+    signInWithGoogle,
+    signOutUser,
   };
 
   return <AuthContext value={authInfo}>{children}</AuthContext>;

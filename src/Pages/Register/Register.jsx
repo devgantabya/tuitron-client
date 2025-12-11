@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import useAuth from "./../../hooks/useAuth";
+import SocialLogin from "../../Components/SocialLogin/SocialLogin";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -177,14 +178,7 @@ export default function Register() {
         </button>
       </form>
 
-      <div className="divider my-4">OR</div>
-
-      {/* <button
-        onClick={handleGoogleLogin}
-        className="btn bg-white text-black border-[#e5e5e5] w-full hover:bg-gray-100 flex items-center justify-center space-x-2"
-      >
-        Signup with Google
-      </button> */}
+      <SocialLogin />
 
       <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-4">
         Already have an account?{" "}

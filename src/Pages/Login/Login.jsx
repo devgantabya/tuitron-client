@@ -1,77 +1,33 @@
-import React, { useState, useContext } from "react";
-import { Link, useNavigate, useLocation } from "react-router";
-import { toast } from "react-toastify";
+import React, { useState } from "react";
+import { Link } from "react-router";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
+import { useForm } from "react-hook-form";
+import useAuth from "./../../hooks/useAuth";
+import SocialLogin from "../../Components/SocialLogin/SocialLogin";
 
 export default function Login() {
-  const { signInUser, signInWithGoogle } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-    try {
-      const userCredential = await signInUser(email, password);
-      const token = await userCredential.user.getIdToken();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/users/role/${email}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const roleData = await res.json();
+  const { signInUser } = useAuth();
 
-      toast.success("Login successful!");
-
-      if (roleData.role === "Student") navigate("/student");
-      else if (roleData.role === "Tutor") navigate("/tutor");
-      else if (roleData.role === "Admin") navigate("/admin");
-      else navigate(from);
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message || "Login failed");
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithGoogle();
-      const token = await result.user.getIdToken();
-
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: result.user.displayName,
-          email: result.user.email,
-          image: result.user.photoURL,
-        }),
+  const handleLogin = (data) => {
+    console.log("Login data:", data);
+    signInUser(data.email, data.password)
+      .then((result) => {
+        const loggedInUser = result.user;
+        console.log("Logged in user:", loggedInUser);
+        // You can redirect the user or show a success message here
+      })
+      .catch((error) => {
+        console.error("Error during login:", error);
+        // You can show an error message to the user here
       });
-      const savedUser = await res.json();
-      toast.success("Login successful!");
-
-      if (savedUser.user.role === "Student") navigate("/student");
-      else if (savedUser.user.role === "Tutor") navigate("/tutor");
-      else if (savedUser.user.role === "Admin") navigate("/admin");
-      else navigate(from);
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message || "Google login failed");
-    }
   };
 
   return (
@@ -80,7 +36,7 @@ export default function Login() {
         Login to Tuitron
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit(handleLogin)} className="space-y-5">
         <div className="relative">
           <label className="label">
             <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -89,12 +45,14 @@ export default function Login() {
           </label>
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register("email", { required: true })}
             placeholder="Enter your email"
             className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
             required
           />
+          {errors.email?.type === "required" && (
+            <span className="text-red-500 text-sm">Email is required</span>
+          )}
         </div>
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
@@ -103,12 +61,14 @@ export default function Login() {
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password", { required: true })}
               placeholder="Enter your password"
               className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
               required
             />
+            {errors.password?.type === "required" && (
+              <span className="text-red-500 text-sm">Password is required</span>
+            )}
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -127,14 +87,14 @@ export default function Login() {
         </button>
       </form>
 
-      <div className="divider my-4">OR</div>
-
-      <button
+      {/* <button
         onClick={handleGoogleLogin}
         className="btn bg-white text-black border-[#e5e5e5] w-full hover:bg-gray-100 flex items-center justify-center space-x-2"
       >
         Login with Google
-      </button>
+      </button> */}
+
+      <SocialLogin />
 
       <div className="mt-4">
         <p className="text-sm text-center text-gray-600 dark:text-gray-400">
