@@ -16,6 +16,8 @@ import RootLayout from "../Layouts/RootLayout/RootLayout";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import Error404 from "../Pages/404Error/404Error";
 import BeATutor from "../Components/SocialLogin/Protected/BeATutor/BeATutor";
+import PostATuition from "../Pages/PostATuition/PostATuition";
+import AddNewTuition from "../Pages/AddNewTuition/AddNewTuition";
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +75,22 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <BeATutor />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "student/post-a-tuition",
+        element: (
+          <PrivateRoute>
+            <PostATuition />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "student/add-new-tuition",
+        element: (
+          <PrivateRoute>
+            <AddNewTuition />
           </PrivateRoute>
         ),
       },
