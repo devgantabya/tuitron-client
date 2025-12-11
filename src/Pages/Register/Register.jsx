@@ -22,6 +22,7 @@ export default function Register() {
     const profileImg = data.photo[0];
     registerUser(data.email, data.password)
       .then((result) => {
+        console.log(result);
         const formData = new FormData();
         formData.append("image", profileImg);
 

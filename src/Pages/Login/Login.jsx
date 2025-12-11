@@ -21,6 +21,7 @@ export default function Login() {
   const handleLogin = (data) => {
     signInUser(data.email, data.password)
       .then((result) => {
+        console.log(result);
         navigate(location?.state || "/");
       })
       .catch((error) => {
