@@ -15,6 +15,7 @@ import TuitionDetails from "./../Pages/TuitionDetails/TuitionDetails";
 import RootLayout from "../Layouts/RootLayout/RootLayout";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import Error404 from "../Pages/404Error/404Error";
+import BeATutor from "../Components/SocialLogin/Protected/BeATutor/BeATutor";
 
 export const router = createBrowserRouter([
   {
@@ -66,6 +67,14 @@ export const router = createBrowserRouter([
       {
         path: "register",
         Component: Register,
+      },
+      {
+        path: "be-a-tutor",
+        element: (
+          <PrivateRoute>
+            <BeATutor />
+          </PrivateRoute>
+        ),
       },
       {
         path: "student",

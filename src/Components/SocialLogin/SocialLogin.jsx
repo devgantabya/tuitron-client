@@ -1,14 +1,18 @@
 import React from "react";
 import useAuth from "../../hooks/useAuth";
+import { useLocation, useNavigate } from "react-router";
 
 const SocialLogin = () => {
   const { signInWithGoogle } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
     signInWithGoogle()
       .then((result) => {
         const loggedInUser = result.user;
         console.log("Logged in user via Google:", loggedInUser);
+        navigate(location?.state || "/");
         // You can redirect the user or show a success message here
       })
       .catch((error) => {

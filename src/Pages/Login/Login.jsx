@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import useAuth from "./../../hooks/useAuth";
@@ -15,14 +15,13 @@ export default function Login() {
   } = useForm();
 
   const { signInUser } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLogin = (data) => {
-    console.log("Login data:", data);
     signInUser(data.email, data.password)
       .then((result) => {
-        const loggedInUser = result.user;
-        console.log("Logged in user:", loggedInUser);
-        // You can redirect the user or show a success message here
+        navigate(location?.state || "/");
       })
       .catch((error) => {
         console.error("Error during login:", error);
@@ -87,19 +86,17 @@ export default function Login() {
         </button>
       </form>
 
-      {/* <button
-        onClick={handleGoogleLogin}
-        className="btn bg-white text-black border-[#e5e5e5] w-full hover:bg-gray-100 flex items-center justify-center space-x-2"
-      >
-        Login with Google
-      </button> */}
-
       <SocialLogin />
 
       <div className="mt-4">
         <p className="text-sm text-center text-gray-600 dark:text-gray-400">
           Don't have an account?{" "}
-          <Link to="/register" className="text-blue-600 dark:text-blue-400">
+          <Link
+            t
+            o="/register"
+            state={location?.state}
+            className="text-blue-600 dark:text-blue-400"
+          >
             Register
           </Link>
         </p>

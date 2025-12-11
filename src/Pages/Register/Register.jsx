@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import useAuth from "./../../hooks/useAuth";
 import SocialLogin from "../../Components/SocialLogin/SocialLogin";
+import axios from "axios";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,14 +14,36 @@ export default function Register() {
     formState: { errors },
   } = useForm();
 
-  const { registerUser } = useAuth();
+  const { registerUser, updateUserProfile } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleRegistration = (data) => {
-    console.log(data);
+    const profileImg = data.photo[0];
     registerUser(data.email, data.password)
       .then((result) => {
-        const user = result.user;
-        console.log("Registered User:", user);
+        const formData = new FormData();
+        formData.append("image", profileImg);
+
+        const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_IMAGE_HOST_KEY
+        }`;
+
+        axios.post(imgUploadUrl, formData).then((res) => {
+          const userProfile = {
+            displayName: data.name,
+            photoURL: res.data.data.url,
+          };
+
+          updateUserProfile(userProfile)
+            .then(() => {
+              navigate(location?.state || "/");
+            })
+            .catch((error) => {
+              console.error("Profile Update Error:", error);
+            });
+        });
+        // Navigate or show success message
       })
       .catch((error) => {
         console.error("Registration Error:", error);
@@ -40,25 +63,28 @@ export default function Register() {
           </label>
           <input
             type="text"
-            {...register("name")}
+            {...register("name", { required: true })}
             placeholder="Enter your full name"
             className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
-            required
           />
+          {errors.name?.type === "required" && (
+            <span className="text-red-600 text-sm">This field is required</span>
+          )}
         </div>
 
-        {/* <div>
+        <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Photo
           </label>
           <input
             type="file"
-            name="photo"
-            onChange={handleFileChange}
+            {...register("photo", { required: true })}
             className="file-input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
-            required
           />
-        </div> */}
+          {errors.photo?.type === "required" && (
+            <span className="text-red-600 text-sm">Photo required</span>
+          )}
+        </div>
 
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
@@ -69,7 +95,6 @@ export default function Register() {
             {...register("email", { required: true })}
             placeholder="Enter your email"
             className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
-            required
           />
           {errors.email?.type === "required" && (
             <span className="text-red-600 text-sm">This field is required</span>
@@ -85,7 +110,6 @@ export default function Register() {
             {...register("phone")}
             placeholder="Phone number"
             className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
-            required
           />
         </div>
 
@@ -182,7 +206,11 @@ export default function Register() {
 
       <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-4">
         Already have an account?{" "}
-        <Link to="/login" className="text-blue-600 dark:text-blue-400">
+        <Link
+          to="/login"
+          state={location?.state}
+          className="text-blue-600 dark:text-blue-400"
+        >
           Login
         </Link>
       </p>
