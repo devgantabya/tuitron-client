@@ -6,11 +6,11 @@ export default function Tuitions() {
   const [loading, setLoading] = useState(true);
 
   const [filters, setFilters] = useState({
-    class: "",
+    course: "",
     subject: "",
     location: "",
-    budgetMin: "",
-    budgetMax: "",
+    salaryMin: "",
+    salaryMax: "",
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,7 +21,6 @@ export default function Tuitions() {
       try {
         const url = `${import.meta.env.VITE_BASE_URL}/tuitions`;
         const res = await fetch(url);
-
         if (!res.ok) throw new Error("Failed to fetch tuitions");
 
         const data = await res.json();
@@ -43,40 +42,36 @@ export default function Tuitions() {
     setCurrentPage(1);
   };
 
-  const classes = useMemo(() => {
-    const allClasses = tuitions.map((t) => t.class_level);
-    return Array.from(new Set(allClasses)).sort((a, b) => a - b);
+  const courses = useMemo(() => {
+    const all = tuitions.map((t) => t.course);
+    return Array.from(new Set(all));
   }, [tuitions]);
 
   const subjects = useMemo(() => {
-    const allSubjects = tuitions.map((t) => t.subject);
-    return Array.from(new Set(allSubjects));
+    const all = tuitions.map((t) => t.subject);
+    return Array.from(new Set(all));
   }, [tuitions]);
 
   const filteredTuitions = useMemo(() => {
     return tuitions.filter((t) => {
-      const classMatch = filters.class ? t.class_level === filters.class : true;
+      const courseMatch = filters.course ? t.course === filters.course : true;
       const subjectMatch = filters.subject
         ? t.subject === filters.subject
         : true;
+
       const locationMatch = filters.location
-        ? t.location.toLowerCase().includes(filters.location.toLowerCase())
+        ? t.contact?.location
+            ?.toLowerCase()
+            .includes(filters.location.toLowerCase())
         : true;
 
-      let budgetValue = 0;
-      if (t.budget) {
-        if (t.budget.$numberInt)
-          budgetValue = parseInt(t.budget.$numberInt, 10);
-        else if (t.budget.$numberDouble)
-          budgetValue = parseFloat(t.budget.$numberDouble);
-        else budgetValue = Number(t.budget);
-      }
+      const salaryValue =
+        typeof t.salary === "number" ? t.salary : Number(t.salary);
+      const salaryMatch =
+        (!filters.salaryMin || salaryValue >= Number(filters.salaryMin)) &&
+        (!filters.salaryMax || salaryValue <= Number(filters.salaryMax));
 
-      const budgetMatch =
-        (!filters.budgetMin || budgetValue >= Number(filters.budgetMin)) &&
-        (!filters.budgetMax || budgetValue <= Number(filters.budgetMax));
-
-      return classMatch && subjectMatch && locationMatch && budgetMatch;
+      return courseMatch && subjectMatch && locationMatch && salaryMatch;
     });
   }, [tuitions, filters]);
 
@@ -85,7 +80,7 @@ export default function Tuitions() {
   const currentTuitions = filteredTuitions.slice(indexOfFirst, indexOfLast);
 
   if (loading) return <p className="text-center py-10">Loading tuitions...</p>;
-  if (!tuitions || tuitions.length === 0)
+  if (!tuitions.length)
     return <p className="text-center py-10">No tuitions available.</p>;
 
   return (
@@ -95,21 +90,19 @@ export default function Tuitions() {
       </h2>
       <p className="text-center mb-11 mt-3 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
         Browse all available tuitions by class, subject, location, and budget.
-        Find detailed schedules and tutor info to quickly choose the right
-        tuition for your needs.
       </p>
 
       <div className="mb-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <select
-          name="class"
-          value={filters.class}
+          name="course"
+          value={filters.course}
           onChange={handleFilterChange}
           className="border p-2 rounded w-full"
         >
-          <option value="">Select Class</option>
-          {classes.map((cls) => (
-            <option key={cls} value={cls}>
-              Class {cls}
+          <option value="">Select Course</option>
+          {courses.map((c) => (
+            <option key={c} value={c}>
+              {c}
             </option>
           ))}
         </select>
@@ -121,9 +114,9 @@ export default function Tuitions() {
           className="border p-2 rounded w-full"
         >
           <option value="">Select Subject</option>
-          {subjects.map((sub) => (
-            <option key={sub} value={sub}>
-              {sub}
+          {subjects.map((s) => (
+            <option key={s} value={s}>
+              {s}
             </option>
           ))}
         </select>
@@ -139,18 +132,18 @@ export default function Tuitions() {
 
         <input
           type="number"
-          name="budgetMin"
-          placeholder="Min Budget"
-          value={filters.budgetMin}
+          name="salaryMin"
+          placeholder="Min Salary"
+          value={filters.salaryMin}
           onChange={handleFilterChange}
           className="border p-2 rounded w-full"
         />
 
         <input
           type="number"
-          name="budgetMax"
-          placeholder="Max Budget"
-          value={filters.budgetMax}
+          name="salaryMax"
+          placeholder="Max Salary"
+          value={filters.salaryMax}
           onChange={handleFilterChange}
           className="border p-2 rounded w-full"
         />
@@ -161,7 +154,7 @@ export default function Tuitions() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {currentTuitions.map((item) => (
-            <TuitionCard key={item._id.$oid} tuition={item} />
+            <TuitionCard key={item._id} tuition={item} />
           ))}
         </div>
       )}

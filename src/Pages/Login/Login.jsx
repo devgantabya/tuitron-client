@@ -93,8 +93,7 @@ export default function Login() {
         <p className="text-sm text-center text-gray-600 dark:text-gray-400">
           Don't have an account?{" "}
           <Link
-            t
-            o="/register"
+            to="/register"
             state={location?.state}
             className="text-blue-600 dark:text-blue-400"
           >

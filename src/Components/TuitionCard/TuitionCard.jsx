@@ -7,7 +7,9 @@ import {
 } from "react-icons/fa";
 
 export default function TuitionCard({ tuition }) {
-  const { _id, subject, class_level, location, budget, schedule } = tuition;
+  const { _id, subject, course, days, time, salary, contact } = tuition;
+
+  const schedule = `${days || ""} | ${time || ""}`;
 
   return (
     <div className="border rounded-2xl p-6 shadow-md bg-white dark:bg-gray-800 hover:shadow-xl transition duration-300 ease-in-out flex flex-col justify-between">
@@ -17,7 +19,7 @@ export default function TuitionCard({ tuition }) {
         </h2>
 
         <div className="flex flex-wrap gap-2 mt-2">
-          {schedule && (
+          {(days || time) && (
             <span className="flex items-center gap-1 px-2 py-1 rounded-full text-sm text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-700">
               <FaClock className="text-xs" /> {schedule}
             </span>
@@ -25,15 +27,15 @@ export default function TuitionCard({ tuition }) {
         </div>
 
         <p className="flex items-center gap-2 mt-3 text-gray-600 dark:text-gray-300">
-          <FaBook /> Class: {class_level}
+          <FaBook /> {course}
         </p>
 
         <p className="flex items-center gap-2 mt-2 text-gray-600 dark:text-gray-300">
-          <FaMapMarkerAlt /> {location}
+          <FaMapMarkerAlt /> {contact?.location}
         </p>
 
         <p className="flex items-center gap-2 mt-2 font-semibold text-green-600 dark:text-green-400">
-          <FaMoneyBillWave /> {budget} BDT
+          <FaMoneyBillWave /> {salary} BDT
         </p>
       </div>
 
