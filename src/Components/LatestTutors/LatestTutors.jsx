@@ -1,18 +1,29 @@
 import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import TutorCard from "../TutorCard/TutorCard";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
+import TutorCard from "../TutorCard/TutorCard";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const LatestTutors = () => {
   const [tutors, setTutors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/latest-tutors`)
-      .then((res) => res.json())
-      .then((data) => setTutors(data.tutors || []))
-      .catch((err) => console.log(err));
-  }, []);
+    const fetchLatestTutors = async () => {
+      try {
+        const response = await axiosSecure.get("/latest-tutors");
+        setTutors(response.data.tutors || []);
+      } catch (err) {
+        console.error("Error fetching latest tutors:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLatestTutors();
+  }, [axiosSecure]);
 
   const fadeUp = {
     hidden: { opacity: 0, y: 20 },
@@ -39,17 +50,19 @@ const LatestTutors = () => {
         animate="visible"
         transition={{ staggerChildren: 0.15 }}
       >
-        {tutors.slice(0, 4).map((tutor) => (
-          <motion.div
-            key={tutor._id}
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-          >
-            <TutorCard tutor={tutor} />
-          </motion.div>
-        ))}
-
-        {tutors.length === 0 && (
+        {loading ? (
+          <p className="text-gray-500 col-span-3 text-center">Loading...</p>
+        ) : tutors.length > 0 ? (
+          tutors.slice(0, 4).map((tutor) => (
+            <motion.div
+              key={tutor._id}
+              variants={fadeUp}
+              transition={{ duration: 0.5 }}
+            >
+              <TutorCard tutor={tutor} />
+            </motion.div>
+          ))
+        ) : (
           <p className="text-gray-500 col-span-3 text-center">
             No latest tutors found.
           </p>

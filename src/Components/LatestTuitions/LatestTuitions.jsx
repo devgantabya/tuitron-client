@@ -1,17 +1,29 @@
 import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import TuitionCard from "../TuitionCard/TuitionCard";
 import { motion } from "framer-motion";
+import { Link } from "react-router";
+import TuitionCard from "../TuitionCard/TuitionCard";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const LatestTuitions = () => {
   const [tuitions, setTuitions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/latest-tuitions`)
-      .then((res) => res.json())
-      .then((data) => setTuitions(data.tuitions || []))
-      .catch((err) => console.log(err));
-  }, []);
+    const fetchLatestTuitions = async () => {
+      try {
+        const response = await axiosSecure.get("/latest-tuitions");
+        setTuitions(response.data || []);
+      } catch (err) {
+        console.error("Error fetching latest tuitions:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLatestTuitions();
+  }, [axiosSecure]);
 
   const fadeUp = {
     hidden: { opacity: 0, y: 20 },
@@ -24,12 +36,12 @@ const LatestTuitions = () => {
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
           Latest Tuitions
         </h2>
-        <a
-          href="/tuitions"
+        <Link
+          to="/tuitions"
           className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
         >
           See All <FaArrowRight className="ml-2" />
-        </a>
+        </Link>
       </div>
 
       <motion.div
@@ -38,17 +50,19 @@ const LatestTuitions = () => {
         animate="visible"
         transition={{ staggerChildren: 0.15 }}
       >
-        {tuitions.slice(0, 4).map((t) => (
-          <motion.div
-            key={t._id}
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-          >
-            <TuitionCard tuition={t} />
-          </motion.div>
-        ))}
-
-        {tuitions.length === 0 && (
+        {loading ? (
+          <p className="text-gray-500 col-span-3 text-center">Loading...</p>
+        ) : tuitions.length > 0 ? (
+          tuitions.slice(0, 4).map((t) => (
+            <motion.div
+              key={t._id}
+              variants={fadeUp}
+              transition={{ duration: 0.5 }}
+            >
+              <TuitionCard tuition={t} />
+            </motion.div>
+          ))
+        ) : (
           <p className="text-gray-500 col-span-3 text-center">
             No latest tuitions found.
           </p>

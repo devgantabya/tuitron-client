@@ -3,11 +3,17 @@ import { useForm } from "react-hook-form";
 import FormInput from "../../Components/FormInput/FormInput";
 import FormSelect from "../../Components/FormSelect/FormSelect";
 import FormTextarea from "../../Components/FormTextarea/FormTextarea";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
+import useAuth from "./../../hooks/useAuth";
 
 const AddNewTuition = () => {
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data) => {
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+
+  const handleAddTuition = async (data) => {
     const formatted = {
       category: data.category,
       course: data.course,
@@ -32,15 +38,46 @@ const AddNewTuition = () => {
         location: data.location,
         address: data.full_address,
       },
+      postedBy: {
+        name: user?.displayName,
+        email: user?.email,
+      },
     };
 
-    console.log("Formatted:", formatted);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, confirm it!",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const res = await axiosSecure.post("/tuitions", formatted);
+
+      Swal.fire({
+        title: "Pending!",
+        text: "Your post is under admin review.",
+        icon: "success",
+      });
+
+      console.log("Tuition added:", res.data);
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to post tuition. Please try again.",
+        icon: "error",
+      });
+      console.error(error);
+    }
   };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(handleAddTuition)}
         className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl p-8 space-y-8"
       >
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">

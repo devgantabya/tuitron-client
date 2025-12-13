@@ -8,7 +8,6 @@ import About from "../Pages/About/About";
 import Contact from "../Pages/Contact/Contact";
 import TutorProfile from "../Pages/TutorProfile/TutorProfile";
 import PrivateRoute from "./PrivateRoute";
-import StudentDashboard from "./../Pages/dashboard/StudentDashboard";
 import TutorDashboard from "../Pages/dashboard/TutorDashboard";
 import AdminDashboard from "./../Pages/dashboard/AdminDashboard";
 import TuitionDetails from "./../Pages/TuitionDetails/TuitionDetails";
@@ -16,8 +15,9 @@ import RootLayout from "../Layouts/RootLayout/RootLayout";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import Error404 from "../Pages/404Error/404Error";
 import BeATutor from "../Components/SocialLogin/Protected/BeATutor/BeATutor";
-import PostATuition from "../Pages/PostATuition/PostATuition";
 import AddNewTuition from "../Pages/AddNewTuition/AddNewTuition";
+import DashboardLayout from "../Layouts/DashboardLayout/DashboardLayout";
+import MyTuitions from "../Pages/dashboard/MyTuitions/MyTuitions";
 
 export const router = createBrowserRouter([
   {
@@ -78,30 +78,6 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      {
-        path: "student/post-a-tuition",
-        element: (
-          <PrivateRoute>
-            <PostATuition />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "student/add-new-tuition",
-        element: (
-          <PrivateRoute>
-            <AddNewTuition />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "student",
-        element: (
-          <PrivateRoute allowedRoles={["Student"]}>
-            <StudentDashboard />
-          </PrivateRoute>
-        ),
-      },
 
       {
         path: "tutor",
@@ -119,6 +95,24 @@ export const router = createBrowserRouter([
             <AdminDashboard />
           </PrivateRoute>
         ),
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout></DashboardLayout>
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        path: "my-tuitions",
+        Component: MyTuitions,
+      },
+      {
+        path: "add-new-tuition",
+        Component: AddNewTuition,
       },
     ],
   },
