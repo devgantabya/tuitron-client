@@ -3,7 +3,6 @@ import { Link } from "react-router";
 
 const TutorCard = ({ tutor }) => {
   const { _id, name, tutor_image, subjectSpecialization } = tutor;
-  console.log(tutor);
   return (
     <div
       key={_id}

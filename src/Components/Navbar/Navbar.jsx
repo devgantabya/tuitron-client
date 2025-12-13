@@ -137,6 +137,22 @@ const Navbar = () => {
           Contact
         </NavLink>
       </li>
+      {user && (
+        <li onClick={() => setMenuOpen(false)}>
+          <NavLink
+            to="/dashboard/my-tuitions"
+            className={({ isActive }) =>
+              `text-sm ${
+                isActive
+                  ? "text-blue-600 dark:text-blue-400 font-semibold"
+                  : "text-gray-700 dark:text-gray-300"
+              }`
+            }
+          >
+            My Tuitions
+          </NavLink>
+        </li>
+      )}
     </>
   );
 

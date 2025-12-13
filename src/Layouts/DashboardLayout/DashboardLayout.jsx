@@ -8,6 +8,7 @@ const DashboardLayout = () => {
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+
       <div className="drawer-content">
         <nav className="navbar w-full bg-base-300">
           <label
@@ -35,7 +36,6 @@ const DashboardLayout = () => {
         ></label>
         <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
           <ul className="menu w-full grow space-y-3">
-            {/* List item */}
             <li>
               <Link
                 to="/"
