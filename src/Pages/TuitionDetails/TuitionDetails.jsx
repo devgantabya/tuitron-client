@@ -19,11 +19,14 @@ import {
   FaRegAddressCard,
   FaArrowRight,
 } from "react-icons/fa";
+import useAuth from "../../hooks/useAuth";
 
 const TuitionDetails = () => {
   const { id } = useParams();
   const [tuition, setTuition] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchTuition = async () => {
@@ -205,12 +208,24 @@ const TuitionDetails = () => {
         </section>
 
         <div className="pt-4 pb-8 w-full flex justify-center">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-12 rounded-xl shadow-lg transition-transform transform active:scale-95 focus:outline-none w-full sm:w-auto text-lg flex items-center justify-center gap-2">
-            Apply Now
-            <span className="text-sm">
-              <FaArrowRight />
-            </span>
-          </button>
+          {user ? (
+            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-12 rounded-xl shadow-lg transition-transform transform active:scale-95 focus:outline-none w-full sm:w-auto text-lg flex items-center justify-center gap-2">
+              Apply Now
+              <span className="text-sm">
+                <FaArrowRight />
+              </span>
+            </button>
+          ) : (
+            <button
+              className="bg-blue-300 text-white font-semibold py-3.5 px-12 rounded-xl shadow-lg focus:outline-none w-full sm:w-auto text-lg flex items-center justify-center gap-2 disabled"
+              title="Only tutors can apply"
+            >
+              For Tutor
+              <span className="text-sm">
+                <FaArrowRight />
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>

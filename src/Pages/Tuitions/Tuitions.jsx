@@ -26,8 +26,9 @@ export default function Tuitions() {
     const fetchAll = async () => {
       try {
         const res = await axiosSecure.get("/tuitions");
-        setAllTuitions(res.data.tuitions || []);
-        setTuitions(res.data.tuitions || []);
+        console.log(res.data);
+        setAllTuitions(res.data || []);
+        setTuitions(res.data || []);
       } catch {
         setAllTuitions([]);
         setTuitions([]);
@@ -61,7 +62,7 @@ export default function Tuitions() {
         };
 
         const res = await axiosSecure.get("/tuitions", { params });
-        setTuitions(res.data.tuitions || []);
+        setTuitions(res.data || []);
       } catch {
         setTuitions([]);
       } finally {

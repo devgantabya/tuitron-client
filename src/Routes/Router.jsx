@@ -18,6 +18,9 @@ import BeATutor from "../Components/SocialLogin/Protected/BeATutor/BeATutor";
 import AddNewTuition from "../Pages/AddNewTuition/AddNewTuition";
 import DashboardLayout from "../Layouts/DashboardLayout/DashboardLayout";
 import MyTuitions from "../Pages/dashboard/MyTuitions/MyTuitions";
+import Payment from "../Pages/dashboard/Payment/Payment";
+import PaymentSuccess from "../Pages/dashboard/Payment/PaymentSuccess";
+import PaymentCancelled from "../Pages/dashboard/Payment/PaymentCancelled";
 
 export const router = createBrowserRouter([
   {
@@ -113,6 +116,18 @@ export const router = createBrowserRouter([
       {
         path: "add-new-tuition",
         Component: AddNewTuition,
+      },
+      {
+        path: "payment/:tuitionId",
+        Component: Payment,
+      },
+      {
+        path: "payment-success",
+        Component: PaymentSuccess,
+      },
+      {
+        path: "payment-cancelled",
+        Component: PaymentCancelled,
       },
     ],
   },

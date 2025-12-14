@@ -6,12 +6,14 @@ import FormTextarea from "../../Components/FormTextarea/FormTextarea";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import useAuth from "./../../hooks/useAuth";
+import { useNavigate } from "react-router";
 
 const AddNewTuition = () => {
   const { register, handleSubmit } = useForm();
 
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   const handleAddTuition = async (data) => {
     const formatted = {
@@ -57,11 +59,15 @@ const AddNewTuition = () => {
     try {
       const res = await axiosSecure.post("/tuitions", formatted);
 
-      Swal.fire({
-        title: "Pending!",
-        text: "Your post is under admin review.",
-        icon: "success",
-      });
+      if (res.data.insertedId) {
+        Swal.fire({
+          title: "Pending!",
+          text: "Your post has beed created. Please wait for approval.",
+          icon: "success",
+        }).then(() => {
+          navigate("/dashboard/my-tuitions");
+        });
+      }
 
       console.log("Tuition added:", res.data);
     } catch (error) {

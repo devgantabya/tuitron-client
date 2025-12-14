@@ -6,7 +6,7 @@ import { LuFilePen, LuFileSpreadsheet } from "react-icons/lu";
 
 const DashboardLayout = () => {
   return (
-    <div className="drawer lg:drawer-open">
+    <div className="drawer lg:drawer-open max-w-7xl mx-auto">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
       <div className="drawer-content">
@@ -21,7 +21,7 @@ const DashboardLayout = () => {
             </span>
           </label>
           <div className="px-4 text-2xl font-semibold text-blue-600 dark:text-white">
-            Tuitron
+            Tuitron Dashboard
           </div>
         </nav>
         {/* Page content here */}
