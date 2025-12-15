@@ -3,6 +3,7 @@ import { Link, Outlet } from "react-router";
 import { AiOutlineHome } from "react-icons/ai";
 import { GoSidebarCollapse } from "react-icons/go";
 import { LuFilePen, LuFileSpreadsheet } from "react-icons/lu";
+import { MdPayment } from "react-icons/md";
 
 const DashboardLayout = () => {
   return (
@@ -72,6 +73,32 @@ const DashboardLayout = () => {
                   <LuFileSpreadsheet size={20} />
                 </span>
                 <span className="is-drawer-close:hidden">Posted Tuitions</span>
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                to="/dashboard/my-tuitions"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Applied Tutors"
+              >
+                <span>
+                  <LuFileSpreadsheet size={20} />
+                </span>
+                <span className="is-drawer-close:hidden">Applied Tutors</span>
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                to="/dashboard/payment-history"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Payment History"
+              >
+                <span>
+                  <MdPayment size={20} />
+                </span>
+                <span className="is-drawer-close:hidden">Payment History</span>
               </Link>
             </li>
           </ul>

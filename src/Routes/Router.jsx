@@ -21,6 +21,7 @@ import MyTuitions from "../Pages/dashboard/MyTuitions/MyTuitions";
 import Payment from "../Pages/dashboard/Payment/Payment";
 import PaymentSuccess from "../Pages/dashboard/Payment/PaymentSuccess";
 import PaymentCancelled from "../Pages/dashboard/Payment/PaymentCancelled";
+import PaymentHistory from "../Pages/dashboard/PaymentHistory/PaymentHistory";
 
 export const router = createBrowserRouter([
   {
@@ -120,6 +121,10 @@ export const router = createBrowserRouter([
       {
         path: "payment/:tuitionId",
         Component: Payment,
+      },
+      {
+        path: "payment-history",
+        Component: PaymentHistory,
       },
       {
         path: "payment-success",
