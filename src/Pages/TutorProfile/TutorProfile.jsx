@@ -31,7 +31,6 @@ export default function TutorProfile() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center gap-6 mb-10">
         <img
           src={tutor.tutor_image}
@@ -71,8 +70,6 @@ export default function TutorProfile() {
           </div>
         </div>
       </div>
-
-      {/* About */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold mb-2">About Me</h2>
         <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -80,7 +77,6 @@ export default function TutorProfile() {
         </p>
       </div>
 
-      {/* Skills */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Skills</h2>
         <div className="flex flex-wrap gap-3">
@@ -95,7 +91,6 @@ export default function TutorProfile() {
         </div>
       </div>
 
-      {/* Tuition Preferences */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold mb-4">Tuition Preferences</h2>
 
@@ -137,7 +132,6 @@ export default function TutorProfile() {
         </div>
       </div>
 
-      {/* Contact Button */}
       <div className="text-center mt-12">
         <button className="px-6 py-3 bg-blue-600 text-white rounded-xl flex items-center gap-2 mx-auto hover:bg-blue-700">
           <FaEnvelope /> Contact Tutor

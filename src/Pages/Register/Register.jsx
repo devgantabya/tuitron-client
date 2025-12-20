@@ -5,7 +5,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import useAuth from "./../../hooks/useAuth";
 import SocialLogin from "../../Components/SocialLogin/SocialLogin";
 import axios from "axios";
-import Swal from "sweetalert2";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+// import Swal from "sweetalert2";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,46 +19,7 @@ export default function Register() {
   const { registerUser, updateUserProfile } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-
-  // const handleRegistration = (data) => {
-  //   const profileImg = data.photo[0];
-  //   registerUser(data.email, data.password)
-  //     .then((result) => {
-  //       console.log(result);
-  //       const formData = new FormData();
-  //       formData.append("image", profileImg);
-
-  //       const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${
-  //         import.meta.env.VITE_IMAGE_HOST_KEY
-  //       }`;
-
-  //       axios.post(imgUploadUrl, formData).then((res) => {
-  //         const userProfile = {
-  //           displayName: data.name,
-  //           photoURL: res.data.data.url,
-  //         };
-
-  //         updateUserProfile(userProfile)
-  //           .then(() => {
-  //             navigate(location?.state || "/");
-  //           })
-  //           .catch((error) => {
-  //             console.error("Profile Update Error:", error);
-  //           });
-  //       });
-  //       // Navigate or show success message
-  //       Swal.fire({
-  //         position: "top-end",
-  //         icon: "success",
-  //         title: "Your work has been saved",
-  //         showConfirmButton: false,
-  //         timer: 1500,
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.error("Registration Error:", error);
-  //     });
-  // };
+  const axiosSecure = useAxiosSecure();
 
   const handleRegistration = (data) => {
     const profileImg = data.photo[0];
@@ -67,48 +29,39 @@ export default function Register() {
         const formData = new FormData();
         formData.append("image", profileImg);
 
-        const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${
+        const image_API_URL = `https://api.imgbb.com/1/upload?key=${
           import.meta.env.VITE_IMAGE_HOST_KEY
         }`;
 
-        return axios.post(imgUploadUrl, formData);
-      })
-      .then((res) => {
-        const imageUrl = res.data.data.url;
+        axios.post(image_API_URL, formData).then((res) => {
+          const photoURL = res.data.data.url;
 
-        const userProfile = {
-          displayName: data.name,
-          photoURL: imageUrl,
-        };
+          const userInfo = {
+            email: data.email,
+            displayName: data.name,
+            photoURL: photoURL,
+            phone: data.phone,
+          };
+          axiosSecure.post("/users", userInfo).then((res) => {
+            if (res.data.insertedId) {
+              console.log("user created in the database");
+            }
+          });
 
-        return updateUserProfile(userProfile).then(() => imageUrl);
-      })
-      .then((imageUrl) => {
-        // 🔥 SEND DATA TO MONGODB
-        const userInfo = {
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          role: "Student",
-          image: imageUrl,
-        };
+          const userProfile = {
+            displayName: data.name,
+            photoURL: photoURL,
+          };
 
-        return axios.post("http://localhost:5000/users/register", userInfo);
-      })
-      .then(() => {
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Registration Successful",
-          showConfirmButton: false,
-          timer: 1500,
+          updateUserProfile(userProfile)
+            .then(() => {
+              navigate(location.state || "/");
+            })
+            .catch((error) => console.log(error));
         });
-
-        navigate(location?.state || "/");
       })
       .catch((error) => {
-        console.error("Registration Error:", error);
-        Swal.fire("Error", error.message, "error");
+        console.log(error);
       });
   };
 
@@ -119,27 +72,6 @@ export default function Register() {
       </h2>
 
       <form onSubmit={handleSubmit(handleRegistration)} className="space-y-5">
-        <div className="flex items-center justify-center gap-8 mt-8">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              {...register("role")}
-              value={"Student"}
-              className="radio"
-              defaultChecked
-            />
-            <span>Student</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              {...register("role")}
-              value={"Tutor"}
-              className="radio"
-            />
-            <span>Tutor</span>
-          </label>
-        </div>
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Full Name
@@ -196,21 +128,6 @@ export default function Register() {
           />
         </div>
 
-        {/* <div>
-          <label className="text-sm text-gray-700 dark:text-gray-300">
-            Select Role
-          </label>
-          <select
-            name="role"
-            value={form.role}
-            onChange={handleChange}
-            className="select select-bordered w-full mt-1 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
-          >
-            <option value="Student">Student</option>
-            <option value="Tutor">Tutor</option>
-          </select>
-        </div> */}
-
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Password
@@ -252,30 +169,6 @@ export default function Register() {
             </button>
           </div>
         </div>
-
-        {/* <div>
-          <label className="text-sm text-gray-700 dark:text-gray-300">
-            Confirm Password
-          </label>
-          <div className="relative">
-            <input
-              type={showConfirm ? "text" : "password"}
-              name="confirm"
-              value={form.confirm}
-              onChange={handleChange}
-              placeholder="Re-enter password"
-              className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 z-10"
-            >
-              {showConfirm ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-            </button>
-          </div>
-        </div> */}
 
         <button
           type="submit"

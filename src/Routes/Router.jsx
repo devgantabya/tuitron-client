@@ -14,7 +14,7 @@ import TuitionDetails from "./../Pages/TuitionDetails/TuitionDetails";
 import RootLayout from "../Layouts/RootLayout/RootLayout";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import Error404 from "../Pages/404Error/404Error";
-import BeATutor from "../Components/SocialLogin/Protected/BeATutor/BeATutor";
+import BeATutor from "../Pages/BeATutor/BeATutor";
 import AddNewTuition from "../Pages/AddNewTuition/AddNewTuition";
 import DashboardLayout from "../Layouts/DashboardLayout/DashboardLayout";
 import MyTuitions from "../Pages/dashboard/MyTuitions/MyTuitions";
@@ -22,6 +22,8 @@ import Payment from "../Pages/dashboard/Payment/Payment";
 import PaymentSuccess from "../Pages/dashboard/Payment/PaymentSuccess";
 import PaymentCancelled from "../Pages/dashboard/Payment/PaymentCancelled";
 import PaymentHistory from "../Pages/dashboard/PaymentHistory/PaymentHistory";
+import AppliedTutors from "./../Pages/dashboard/AppliedTutors/AppliedTutors";
+import ApprovedTutors from "./../Pages/dashboard/ApprovedTutors/ApprovedTutors";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +47,10 @@ export const router = createBrowserRouter([
         Component: Tutors,
       },
       {
+        path: "tutors/:id",
+        Component: TutorProfile,
+      },
+      {
         path: "about",
         Component: About,
       },
@@ -53,8 +59,12 @@ export const router = createBrowserRouter([
         Component: Contact,
       },
       {
-        path: "tutor/:id",
-        Component: TutorProfile,
+        path: "be-a-tutor",
+        element: (
+          <PrivateRoute>
+            <BeATutor />
+          </PrivateRoute>
+        ),
       },
       {
         path: "*",
@@ -74,32 +84,6 @@ export const router = createBrowserRouter([
         path: "register",
         Component: Register,
       },
-      {
-        path: "be-a-tutor",
-        element: (
-          <PrivateRoute>
-            <BeATutor />
-          </PrivateRoute>
-        ),
-      },
-
-      {
-        path: "tutor",
-        element: (
-          <PrivateRoute allowedRoles={["Tutor"]}>
-            <TutorDashboard />
-          </PrivateRoute>
-        ),
-      },
-
-      {
-        path: "admin",
-        element: (
-          <PrivateRoute allowedRoles={["Admin"]}>
-            <AdminDashboard />
-          </PrivateRoute>
-        ),
-      },
     ],
   },
   {
@@ -111,12 +95,20 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
+        path: "add-new-tuition",
+        Component: AddNewTuition,
+      },
+      {
         path: "my-tuitions",
         Component: MyTuitions,
       },
       {
-        path: "add-new-tuition",
-        Component: AddNewTuition,
+        path: "applied-tutors",
+        Component: AppliedTutors,
+      },
+      {
+        path: "approved-tutors",
+        Component: ApprovedTutors,
       },
       {
         path: "payment/:tuitionId",

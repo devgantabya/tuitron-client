@@ -3,6 +3,8 @@ import { Link, Outlet } from "react-router";
 import { AiOutlineHome } from "react-icons/ai";
 import { GoSidebarCollapse } from "react-icons/go";
 import { LuFilePen, LuFileSpreadsheet } from "react-icons/lu";
+import { RiPassPendingLine } from "react-icons/ri";
+import { FaChalkboardTeacher } from "react-icons/fa";
 import { MdPayment } from "react-icons/md";
 
 const DashboardLayout = () => {
@@ -25,7 +27,7 @@ const DashboardLayout = () => {
             Tuitron Dashboard
           </div>
         </nav>
-        {/* Page content here */}
+
         <Outlet></Outlet>
       </div>
 
@@ -78,14 +80,27 @@ const DashboardLayout = () => {
 
             <li>
               <Link
-                to="/dashboard/my-tuitions"
+                to="/dashboard/applied-tutors"
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Applied Tutors"
               >
                 <span>
-                  <LuFileSpreadsheet size={20} />
+                  <RiPassPendingLine size={20} />
                 </span>
                 <span className="is-drawer-close:hidden">Applied Tutors</span>
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                to="/dashboard/approved-tutors"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Approved Tutors"
+              >
+                <span>
+                  <FaChalkboardTeacher size={20} />
+                </span>
+                <span className="is-drawer-close:hidden">Approved Tutors</span>
               </Link>
             </li>
 

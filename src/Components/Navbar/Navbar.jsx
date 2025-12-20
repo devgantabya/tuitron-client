@@ -35,31 +35,8 @@ const Navbar = () => {
       });
   };
 
-  const getDashboardLink = () => {
-    if (!user?.role) return "/";
-    switch (user.role.toLowerCase()) {
-      case "student":
-        return "/student";
-      case "tutor":
-        return "/tutor";
-      case "admin":
-        return "/admin";
-      default:
-        return "/";
-    }
-  };
-
-  console.log("USER:", user);
-  console.log("ROLE:", user?.role);
-
-  const getDashboardLabel = () => {
-    if (!user?.role) return "Dashboard";
-    return `${
-      user.role.charAt(0).toUpperCase() + user.role.slice(1)
-    } Dashboard`;
-  };
-
   const userName = user?.displayName || user?.name || "User";
+
   const userImage =
     user?.photoURL ||
     user?.image ||
@@ -153,6 +130,21 @@ const Navbar = () => {
           </NavLink>
         </li>
       )}
+
+      <li onClick={() => setMenuOpen(false)}>
+        <NavLink
+          to="/be-a-tutor"
+          className={({ isActive }) =>
+            `text-sm ${
+              isActive
+                ? "text-blue-600 dark:text-blue-400 font-semibold"
+                : "text-gray-700 dark:text-gray-300"
+            }`
+          }
+        >
+          Be A Tutor
+        </NavLink>
+      </li>
     </>
   );
 
@@ -226,11 +218,11 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Link
-                      to={getDashboardLink()}
+                      to={"/dashboard"}
                       onClick={() => setDropdownOpen(false)}
                       className="text-gray-700 dark:text-gray-200 w-full flex gap-2 items-center"
                     >
-                      <span className="text-lg">📊</span> {getDashboardLabel()}
+                      <span className="text-lg">📊</span> Dashboard
                     </Link>
                   </li>
                   <li>

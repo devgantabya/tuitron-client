@@ -1,23 +1,30 @@
 import React from "react";
 import useAuth from "../../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const SocialLogin = () => {
   const { signInWithGoogle } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = () => {
     signInWithGoogle()
       .then((result) => {
-        const loggedInUser = result.user;
-        console.log("Logged in user via Google:", loggedInUser);
-        navigate(location?.state || "/");
-        // You can redirect the user or show a success message here
+        const userInfo = {
+          email: result.user.email,
+          displayName: result.user.displayName,
+          photoURL: result.user.photoURL,
+        };
+
+        axiosSecure.post("/users", userInfo).then((res) => {
+          console.log("user data has been stored", res.data);
+          navigate(location.state || "/");
+        });
       })
       .catch((error) => {
-        console.error("Error during Google login:", error);
-        // You can show an error message to the user here
+        console.log(error);
       });
   };
 

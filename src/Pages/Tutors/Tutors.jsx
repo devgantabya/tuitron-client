@@ -49,7 +49,7 @@ export default function Tutors() {
 
       {loading && <p className="text-gray-600">Loading tutors...</p>}
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6 min-h-[250px]">
         {!loading && filtered.length === 0 && (
           <p className="text-gray-600 dark:text-gray-300">No tutors found.</p>
         )}
@@ -90,7 +90,7 @@ export default function Tutors() {
             </div>
 
             <Link
-              to={`/tutor/${t._id}`}
+              to={`/tutors/${t._id}`}
               className="mt-4 block w-full text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
             >
               View Profile

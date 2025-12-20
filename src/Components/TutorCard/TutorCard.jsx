@@ -19,7 +19,7 @@ const TutorCard = ({ tutor }) => {
       </div>
 
       <Link
-        to={`/tutor/${_id}`}
+        to={`/tutors/${_id}`}
         className="mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-center block"
       >
         View Profile
