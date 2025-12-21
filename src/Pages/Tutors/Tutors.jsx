@@ -6,24 +6,26 @@ import {
 } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import useAxiosSecure from "./../../hooks/useAxiosSecure";
 
 export default function Tutors() {
   const [search, setSearch] = useState("");
   const [tutors, setTutors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/tutors`)
-      .then((res) => res.json())
-      .then((data) => {
-        setTutors(data.tutors || []);
+    axiosSecure
+      .get("/tutors")
+      .then((res) => {
+        setTutors(res.data);
         setLoading(false);
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
       });
-  }, []);
+  }, [axiosSecure]);
 
   const query = search.toLowerCase();
 
@@ -64,7 +66,7 @@ export default function Tutors() {
                 <img
                   src={t.tutor_image}
                   alt={t.name}
-                  className="w-full h-40 object-contain rounded-lg mb-3"
+                  className="w-20 h-full object-cover rounded-lg mb-3"
                 />
               </div>
 

@@ -15,36 +15,28 @@ const ApprovedTutors = () => {
     },
   });
 
-  const handleApproveTutor = (id) => {
-    const updatedInfo = { status: "approved" };
-    axiosSecure.patch(`/tutors/${id}`, updatedInfo).then((res) => {
+  const updateTutorStatus = (tutor, status) => {
+    const updatedInfo = { status: status, email: tutor.tutor_email };
+    axiosSecure.patch(`/tutors/${tutor._id}`, updatedInfo).then((res) => {
       if (res.data.modifiedCount) {
         refetch();
         Swal.fire({
           position: "top-right",
           icon: "success",
-          title: "Tutor has been approved.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-    });
-  };
-
-  const handleRejectTutor = (id) => {
-    const updatedInfo = { status: "rejected" };
-    axiosSecure.patch(`/tutors/${id}`, updatedInfo).then((res) => {
-      if (res.data.modifiedCount) {
-        refetch();
-        Swal.fire({
-          position: "top-right",
-          icon: "info",
-          title: "Tutor has been rejected.",
+          title: `Tutor status is set to ${status}.`,
           showConfirmButton: false,
           timer: 2000,
         });
       }
     });
+  };
+
+  const handleApproveTutor = (tutor) => {
+    updateTutorStatus(tutor, "approved");
+  };
+
+  const handleRejectTutor = (tutor) => {
+    updateTutorStatus(tutor, "rejected");
   };
 
   const handleDeleteTutor = (id) => {
@@ -110,13 +102,13 @@ const ApprovedTutors = () => {
 
                     <td className="flex gap-2">
                       <button
-                        onClick={() => handleApproveTutor(tutor._id)}
+                        onClick={() => handleApproveTutor(tutor)}
                         className="btn btn-sm btn-squire hover:bg-green-600 hover:text-white"
                       >
                         <FaCheck size={18} />
                       </button>
                       <button
-                        onClick={() => handleRejectTutor(tutor._id)}
+                        onClick={() => handleRejectTutor(tutor)}
                         className="btn btn-sm btn-squire hover:bg-orange-600 hover:text-white"
                       >
                         <MdOutlinePersonRemove size={20} />
@@ -159,13 +151,13 @@ const ApprovedTutors = () => {
 
                 <div className="flex gap-2 mt-3">
                   <button
-                    onClick={() => handleApproveTutor(tutor._id)}
+                    onClick={() => handleApproveTutor(tutor)}
                     className="flex-1 btn btn-sm bg-green-600 text-white"
                   >
                     Approve
                   </button>
                   <button
-                    onClick={() => handleRejectTutor(tutor._id)}
+                    onClick={() => handleRejectTutor(tutor)}
                     className="flex-1 btn btn-sm bg-orange-600 text-white"
                   >
                     Reject

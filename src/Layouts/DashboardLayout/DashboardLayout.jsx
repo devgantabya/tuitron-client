@@ -4,7 +4,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import { GoSidebarCollapse } from "react-icons/go";
 import { LuFilePen, LuFileSpreadsheet } from "react-icons/lu";
 import { RiPassPendingLine } from "react-icons/ri";
-import { FaChalkboardTeacher } from "react-icons/fa";
+import { FaChalkboardTeacher, FaUsers } from "react-icons/fa";
 import { MdPayment } from "react-icons/md";
 
 const DashboardLayout = () => {
@@ -101,6 +101,19 @@ const DashboardLayout = () => {
                   <FaChalkboardTeacher size={20} />
                 </span>
                 <span className="is-drawer-close:hidden">Approved Tutors</span>
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                to="/dashboard/users-management"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Users Management"
+              >
+                <span>
+                  <FaUsers size={20} />
+                </span>
+                <span className="is-drawer-close:hidden">Users Management</span>
               </Link>
             </li>
 

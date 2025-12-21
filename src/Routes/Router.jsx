@@ -24,6 +24,7 @@ import PaymentCancelled from "../Pages/dashboard/Payment/PaymentCancelled";
 import PaymentHistory from "../Pages/dashboard/PaymentHistory/PaymentHistory";
 import AppliedTutors from "./../Pages/dashboard/AppliedTutors/AppliedTutors";
 import ApprovedTutors from "./../Pages/dashboard/ApprovedTutors/ApprovedTutors";
+import UsersManagement from "../Pages/dashboard/UsersManagement/UsersManagement";
 
 export const router = createBrowserRouter([
   {
@@ -109,6 +110,10 @@ export const router = createBrowserRouter([
       {
         path: "approved-tutors",
         Component: ApprovedTutors,
+      },
+      {
+        path: "users-management",
+        Component: UsersManagement,
       },
       {
         path: "payment/:tuitionId",
