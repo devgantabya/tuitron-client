@@ -6,8 +6,12 @@ import { LuFilePen, LuFileSpreadsheet } from "react-icons/lu";
 import { RiPassPendingLine } from "react-icons/ri";
 import { FaChalkboardTeacher, FaUsers } from "react-icons/fa";
 import { MdPayment } from "react-icons/md";
+import useRole from "./../../hooks/useRole";
 
 const DashboardLayout = () => {
+  const { role, isLoading } = useRole();
+  if (isLoading) return null;
+  console.log("User role in DashboardLayout:", role);
   return (
     <div className="drawer lg:drawer-open max-w-7xl mx-auto">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -91,31 +95,38 @@ const DashboardLayout = () => {
               </Link>
             </li>
 
-            <li>
-              <Link
-                to="/dashboard/approved-tutors"
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Approved Tutors"
-              >
-                <span>
-                  <FaChalkboardTeacher size={20} />
-                </span>
-                <span className="is-drawer-close:hidden">Approved Tutors</span>
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                to="/dashboard/users-management"
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Users Management"
-              >
-                <span>
-                  <FaUsers size={20} />
-                </span>
-                <span className="is-drawer-close:hidden">Users Management</span>
-              </Link>
-            </li>
+            {role?.role === "admin" && (
+              <>
+                <li>
+                  <Link
+                    to="/dashboard/approved-tutors"
+                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Approved Tutors"
+                  >
+                    <span>
+                      <FaChalkboardTeacher size={20} />
+                    </span>
+                    <span className="is-drawer-close:hidden">
+                      Approved Tutors
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/dashboard/users-management"
+                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Users Management"
+                  >
+                    <span>
+                      <FaUsers size={20} />
+                    </span>
+                    <span className="is-drawer-close:hidden">
+                      Users Management
+                    </span>
+                  </Link>
+                </li>
+              </>
+            )}
 
             <li>
               <Link

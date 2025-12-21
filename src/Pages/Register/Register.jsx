@@ -21,48 +21,49 @@ export default function Register() {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
 
-  const handleRegistration = (data) => {
-    const profileImg = data.photo[0];
+  const handleRegistration = async (data) => {
+    try {
+      if (!data.photo || data.photo.length === 0) {
+        throw new Error("No photo selected");
+      }
 
-    registerUser(data.email, data.password)
-      .then(() => {
-        const formData = new FormData();
-        formData.append("image", profileImg);
+      const profileImg = data.photo[0];
+      await registerUser(data.email, data.password);
 
-        const image_API_URL = `https://api.imgbb.com/1/upload?key=${
-          import.meta.env.VITE_IMAGE_HOST_KEY
-        }`;
+      const formData = new FormData();
+      formData.append("image", profileImg);
 
-        axios.post(image_API_URL, formData).then((res) => {
-          const photoURL = res.data.data.url;
+      const image_API_URL = `https://api.imgbb.com/1/upload?key=${
+        import.meta.env.VITE_IMAGE_HOST_KEY
+      }`;
 
-          const userInfo = {
-            email: data.email,
-            displayName: data.name,
-            photoURL: photoURL,
-            phone: data.phone,
-          };
-          axiosSecure.post("/users", userInfo).then((res) => {
-            if (res.data.insertedId) {
-              console.log("user created in the database");
-            }
-          });
+      const imgRes = await axios.post(image_API_URL, formData);
+      const photoURL = imgRes.data.data.url;
 
-          const userProfile = {
-            displayName: data.name,
-            photoURL: photoURL,
-          };
+      const userInfo = {
+        email: data.email,
+        displayName: data.name,
+        photoURL,
+        phone: data.phone,
+      };
 
-          updateUserProfile(userProfile)
-            .then(() => {
-              navigate(location.state || "/");
-            })
-            .catch((error) => console.log(error));
-        });
-      })
-      .catch((error) => {
-        console.log(error);
+      await axiosSecure.post("/users", userInfo);
+
+      await updateUserProfile({
+        displayName: data.name,
+        photoURL,
       });
+
+      navigate(location.state || "/");
+    } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        alert("Email already exists. Please login.");
+        navigate("/login");
+      } else {
+        console.error(error);
+        alert(error.message || "Registration failed");
+      }
+    }
   };
 
   return (

@@ -37,7 +37,7 @@ const UsersManagement = () => {
     const roleInfo = { role: "admin" };
 
     try {
-      const res = await axiosSecure.patch(`/users/${user._id}`, roleInfo);
+      const res = await axiosSecure.patch(`/users/${user._id}/role`, roleInfo);
       if (res.data.modifiedCount > 0) {
         refetch();
         Swal.fire({
@@ -58,7 +58,7 @@ const UsersManagement = () => {
     const roleInfo = { role: "user" };
 
     try {
-      const res = await axiosSecure.patch(`/users/${user._id}`, roleInfo);
+      const res = await axiosSecure.patch(`/users/${user._id}/role`, roleInfo);
       if (res.data.modifiedCount > 0) {
         refetch();
         Swal.fire({
