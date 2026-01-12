@@ -26,6 +26,7 @@ import AppliedTutors from "./../Pages/dashboard/AppliedTutors/AppliedTutors";
 import ApprovedTutors from "./../Pages/dashboard/ApprovedTutors/ApprovedTutors";
 import UsersManagement from "../Pages/dashboard/UsersManagement/UsersManagement";
 import AdminRoute from "./AdminRoute";
+import PublicRoute from "./PublicRoute";
 
 export const router = createBrowserRouter([
   {
@@ -80,11 +81,19 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "login",
-        Component: Login,
+        element: (
+          <PublicRoute>
+            <Login></Login>
+          </PublicRoute>
+        ),
       },
       {
         path: "register",
-        Component: Register,
+        element: (
+          <PublicRoute>
+            <Register></Register>
+          </PublicRoute>
+        ),
       },
     ],
   },
@@ -110,11 +119,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "approved-tutors",
-        element: <AdminRoute><ApprovedTutors></ApprovedTutors></AdminRoute>,
+        element: (
+          <AdminRoute>
+            <ApprovedTutors></ApprovedTutors>
+          </AdminRoute>
+        ),
       },
       {
         path: "users-management",
-        element: <AdminRoute><UsersManagement></UsersManagement></AdminRoute>,
+        element: (
+          <AdminRoute>
+            <UsersManagement></UsersManagement>
+          </AdminRoute>
+        ),
       },
       {
         path: "payment/:tuitionId",

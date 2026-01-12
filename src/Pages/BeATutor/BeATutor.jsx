@@ -41,9 +41,6 @@ const BeATutor = () => {
         navigate("/");
       }
     });
-
-    console.log(data);
-    console.log(tutorData);
   };
 
   return (

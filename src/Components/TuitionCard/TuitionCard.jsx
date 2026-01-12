@@ -8,43 +8,48 @@ import {
 
 export default function TuitionCard({ tuition }) {
   const { _id, subject, course, days, time, salary, contact } = tuition;
-
-  const schedule = `${days || ""} | ${time || ""}`;
+  const schedule = [days, time].filter(Boolean).join(" • ");
 
   return (
-    <div className="border rounded-2xl p-6 shadow-md bg-white dark:bg-gray-800 hover:shadow-xl transition duration-300 ease-in-out flex flex-col justify-between">
-      <div>
-        <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">
+    <div className="h-full flex flex-col">
+      {/* Card Content */}
+      <div className=" flex-1">
+        <h2 className="text-xl text-left font-bold text-gray-900 dark:text-white line-clamp-2">
           {subject || "Unknown Subject"}
         </h2>
 
-        <div className="flex flex-wrap gap-2 mt-2">
-          {(days || time) && (
-            <span className="flex items-center gap-1 px-2 py-1 rounded-full text-sm text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-700">
-              <FaClock className="text-xs" /> {schedule}
-            </span>
-          )}
-        </div>
-
-        <p className="flex items-center gap-2 mt-3 text-gray-600 dark:text-gray-300">
-          <FaBook /> {course}
+        <p className="mt-2 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <FaBook className="text-blue-500" />
+          {course || "N/A"}
         </p>
 
-        <p className="flex items-center gap-2 mt-2 text-gray-600 dark:text-gray-300">
-          <FaMapMarkerAlt /> {contact?.location}
-        </p>
+        {schedule && (
+          <p className="mt-3 flex justify-start items-center gap-2 py-1.5 rounded-full text-blue-700 dark:text-blue-300 text-sm">
+            <FaClock className="text-xs" />
+            {schedule}
+          </p>
+        )}
 
-        <p className="flex items-center gap-2 mt-2 font-semibold text-green-600 dark:text-green-400">
-          <FaMoneyBillWave /> {salary} BDT
+        <p className="mt-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <FaMapMarkerAlt className="text-blue-500" />
+          {contact?.location || "Location not specified"}
         </p>
       </div>
 
-      <Link
-        to={`/tuitions/${_id}`}
-        className="mt-4 block bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-center py-2 rounded-xl font-medium transition"
-      >
-        View Details
-      </Link>
+      {/* Footer */}
+      <div className="px-1 py-4 mt-auto flex items-center justify-between bg-gray-50 dark:bg-gray-800/60 rounded-b-2xl">
+        <p className="flex items-center gap-2 font-bold text-gray-900 dark:text-white">
+          <FaMoneyBillWave className="text-green-500" />
+          {salary ? `${salary} BDT` : "Negotiable"}
+        </p>
+
+        <Link
+          to={`/tuitions/${_id}`}
+          className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          View →
+        </Link>
+      </div>
     </div>
   );
 }

@@ -1,62 +1,67 @@
 import React from "react";
-import { FaUserCheck, FaSearch, FaHandshake } from "react-icons/fa";
+import { FaSearch, FaUserCheck, FaHandshake } from "react-icons/fa";
+import Card from "../UI/Card";
+
+const steps = [
+  {
+    icon: <FaSearch size={30} className="text-white" />,
+    title: "Search",
+    desc: "Easily find the right tutor or tuition post using our powerful filters.",
+    gradient: "from-blue-400 to-blue-600",
+  },
+  {
+    icon: <FaUserCheck size={30} className="text-white" />,
+    title: "Select",
+    desc: "Compare tutors or tuitions and pick the one that fits your needs.",
+    gradient: "from-green-400 to-green-600",
+  },
+  {
+    icon: <FaHandshake size={30} className="text-white" />,
+    title: "Connect",
+    desc: "Contact the tutor, schedule a session, and start learning instantly.",
+    gradient: "from-purple-400 to-purple-600",
+  },
+];
 
 const HowToWorks = () => {
-  const steps = [
-    {
-      icon: <FaSearch className="text-white text-3xl" />,
-      title: "Search",
-      desc: "Browse tuition posts or tutor profiles that match your needs.",
-      color: "bg-blue-600",
-    },
-    {
-      icon: <FaUserCheck className="text-white text-3xl" />,
-      title: "Select",
-      desc: "Review details and choose the most suitable tutor or tuition.",
-      color: "bg-green-600",
-    },
-    {
-      icon: <FaHandshake className="text-white text-3xl" />,
-      title: "Connect",
-      desc: "Contact and start your learning journey with confidence.",
-      color: "bg-purple-600",
-    },
-  ];
-
   return (
-    <section className="py-16 bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-          How the Platform Works
+    <section className="relative py-32 px-6 bg-gray-50 dark:bg-gray-900 overflow-hidden">
+      <div className="absolute -top-36 -left-36 w-96 h-96 bg-blue-200 dark:bg-blue-900 rounded-full opacity-20 pointer-events-none"></div>
+      <div className="absolute -bottom-36 -right-36 w-96 h-96 bg-purple-200 dark:bg-purple-900 rounded-full opacity-20 pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto text-center">
+        <h2 className="text-5xl md:text-4xl font-bold text-gray-900 dark:text-white">
+          How It Works
         </h2>
-        <p className="mt-3 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          A simple and efficient process designed to connect students and
-          tutors.
+        <p className="text-gray-600 dark:text-gray-300 mt-4 max-w-3xl mx-auto text-lg md:text-xl">
+          A simple 3-step process to find the perfect tutor or tuition and start
+          learning today.
         </p>
 
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-10">
-          {steps.map((step, index) => (
-            <div key={index} className="relative">
-              <div className="p-8 rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition">
-                <div
-                  className={`w-16 h-16 mx-auto flex items-center justify-center rounded-full ${step.color}`}
-                >
-                  {step.icon}
-                </div>
-
-                <h3 className="text-xl font-semibold mt-6 text-gray-800 dark:text-gray-200">
-                  {step.title}
-                </h3>
-
-                <p className="mt-3 text-gray-600 dark:text-gray-400">
-                  {step.desc}
-                </p>
+        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10">
+          {steps.map((step, idx) => (
+            <Card
+              key={idx}
+              className="relative flex flex-col items-center p-10 hover:scale-105 transition-transform duration-300"
+            >
+              <div
+                className={`absolute -top-12 w-25 h-25 rounded-full bg-gradient-to-tr ${step.gradient} flex items-center justify-center shadow-lg`}
+              >
+                {step.icon}
               </div>
 
-              <div className="absolute -top-4 -left-4 md:-top-5 md:-left-5 w-10 h-10 bg-blue-500 dark:bg-blue-700 text-white flex items-center justify-center rounded-full font-bold shadow">
-                {index + 1}
+              <div className="absolute top-5 left-10 transform -translate-x-1/2 w-14 h-14 text-blue-50 dark:text-gray-900/30 flex items-center justify-center text-9xl font-bold ">
+                {idx + 1}
               </div>
-            </div>
+
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-16">
+                {step.title}
+              </h3>
+
+              <p className="text-gray-600 dark:text-gray-300 mt-3 text-center">
+                {step.desc}
+              </p>
+            </Card>
           ))}
         </div>
       </div>

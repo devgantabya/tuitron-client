@@ -19,38 +19,49 @@ import {
   FaRegAddressCard,
   FaArrowRight,
 } from "react-icons/fa";
-import useAuth from "../../hooks/useAuth";
+import useRole from "./../../hooks/useRole";
+import ApplyModal from "../../Components/ApplyModal/ApplyModal";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const TuitionDetails = () => {
   const { id } = useParams();
-  const [tuition, setTuition] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const axiosSecure = useAxiosSecure();
 
-  const { user } = useAuth();
+  const [tuition, setTuition] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [loading, setLoading] = useState(true);
+  const { role, isLoading: roleLoading } = useRole();
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchTuition = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/tuitions/${id}`
-        );
-        if (!res.ok) throw new Error("Failed to fetch tuition");
-
-        const data = await res.json();
-        setTuition(data || null);
-      } catch (err) {
-        console.error(err);
-        setTuition(null);
+        const { data } = await axiosSecure.get(`/tuitions/${id}`);
+        if (isMounted) setTuition(data);
+      } catch (error) {
+        console.error("Failed to fetch tuition:", error);
+        if (isMounted) setTuition(null);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchTuition();
-  }, [id]);
+    return () => (isMounted = false);
+  }, [id, axiosSecure]);
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
-  if (!tuition) return <p className="text-center py-10">Tuition not found</p>;
+  if (roleLoading || loading) {
+    return <p className="text-center py-10">Loading...</p>;
+  }
+
+  if (!tuition)
+    return (
+      <p className="min-h-screen flex justify-center items-center">
+        Tuition not found
+      </p>
+    );
 
   return (
     <div className="bg-background-light dark:bg-background-dark font-sans transition-colors duration-300 min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
@@ -208,8 +219,11 @@ const TuitionDetails = () => {
         </section>
 
         <div className="pt-4 pb-8 w-full flex justify-center">
-          {user ? (
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-12 rounded-xl shadow-lg transition-transform transform active:scale-95 focus:outline-none w-full sm:w-auto text-lg flex items-center justify-center gap-2">
+          {role?.role === "tutor" ? (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-12 rounded-xl shadow-lg transition-transform transform active:scale-95 focus:outline-none w-full sm:w-auto text-lg flex items-center justify-center gap-2"
+            >
               Apply Now
               <span className="text-sm">
                 <FaArrowRight />
@@ -217,8 +231,9 @@ const TuitionDetails = () => {
             </button>
           ) : (
             <button
-              className="bg-blue-300 text-white font-semibold py-3.5 px-12 rounded-xl shadow-lg focus:outline-none w-full sm:w-auto text-lg flex items-center justify-center gap-2 disabled"
+              className="bg-blue-300 text-white font-semibold py-3.5 px-12 rounded-xl shadow-lg focus:outline-none w-full sm:w-auto text-lg flex items-center justify-center gap-2"
               title="Only tutors can apply"
+              disabled
             >
               For Tutor
               <span className="text-sm">
@@ -228,6 +243,9 @@ const TuitionDetails = () => {
           )}
         </div>
       </div>
+      {isModalOpen && (
+        <ApplyModal tuition={tuition} onClose={() => setIsModalOpen(false)} />
+      )}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import useAuth from "./../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import SocialLogin from "../../Components/SocialLogin/SocialLogin";
 
 export default function Login() {
@@ -22,11 +22,12 @@ export default function Login() {
     signInUser(data.email, data.password)
       .then((result) => {
         console.log(result);
-        navigate(location?.state || "/");
+
+        const redirectTo = location.state?.from || "/dashboard";
+        navigate(redirectTo, { replace: true });
       })
       .catch((error) => {
         console.error("Error during login:", error);
-        // You can show an error message to the user here
       });
   };
 
@@ -54,6 +55,7 @@ export default function Login() {
             <span className="text-red-500 text-sm">Email is required</span>
           )}
         </div>
+
         <div>
           <label className="text-sm text-gray-700 dark:text-gray-300">
             Password
