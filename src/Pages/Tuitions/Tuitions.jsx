@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { FaMapMarkerAlt, FaMoneyBillWave, FaBook } from "react-icons/fa";
 import TuitionCard from "../../Components/TuitionCard/TuitionCard";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Card from "./../../Components/UI/Card";
 
 export default function Tuitions() {
   const axiosSecure = useAxiosSecure();
@@ -18,15 +21,14 @@ export default function Tuitions() {
   });
 
   const [debouncedFilters, setDebouncedFilters] = useState(filters);
-
   const [currentPage, setCurrentPage] = useState(1);
+
   const tuitionsPerPage = 8;
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
         const res = await axiosSecure.get("/tuitions");
-        console.log(res.data);
         setAllTuitions(res.data || []);
         setTuitions(res.data || []);
       } catch {
@@ -50,7 +52,6 @@ export default function Tuitions() {
     const fetchFiltered = async () => {
       try {
         setLoading(true);
-
         const params = {
           ...debouncedFilters,
           salaryMin: debouncedFilters.salaryMin
@@ -60,7 +61,6 @@ export default function Tuitions() {
             ? Number(debouncedFilters.salaryMax)
             : undefined,
         };
-
         const res = await axiosSecure.get("/tuitions", { params });
         setTuitions(res.data || []);
       } catch {
@@ -82,6 +82,7 @@ export default function Tuitions() {
     () => [...new Set(allTuitions.map((t) => t.course).filter(Boolean))],
     [allTuitions]
   );
+
   const subjects = useMemo(
     () => [...new Set(allTuitions.map((t) => t.subject).filter(Boolean))],
     [allTuitions]
@@ -91,102 +92,136 @@ export default function Tuitions() {
   const indexOfFirst = indexOfLast - tuitionsPerPage;
   const currentTuitions = tuitions.slice(indexOfFirst, indexOfLast);
 
-  if (loading) return <p className="text-center py-10">Loading tuitions...</p>;
+  if (loading)
+    return (
+      <p className="min-h-screen flex justify-center items-center text-gray-600 dark:text-gray-400">
+        Loading tuitions...
+      </p>
+    );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h2 className="text-3xl md:text-4xl mt-5 text-center font-bold">
-        All Tuitions
-      </h2>
-      <p className="text-center mb-10 mt-3 text-gray-600 max-w-2xl mx-auto">
-        Browse available tuitions by class, subject, location, and budget.
-      </p>
+    <main className="bg-blue-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white">
+          All Tuitions
+        </h2>
 
-      <div className="mb-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <select
-          name="course"
-          value={filters.course}
-          onChange={handleFilterChange}
-          className="border p-2 rounded"
+        <p className="text-center mt-3 mb-12 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          Browse available tuitions by class, subject, location, and budget.
+        </p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-12 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-lg p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
         >
-          <option value="">Select Course</option>
-          {courses.map((course) => (
-            <option key={course} value={course}>
-              {course}
-            </option>
-          ))}
-        </select>
-
-        <select
-          name="subject"
-          value={filters.subject}
-          onChange={handleFilterChange}
-          className="border p-2 rounded"
-        >
-          <option value="">Select Subject</option>
-          {subjects.map((subject) => (
-            <option key={subject} value={subject}>
-              {subject}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="text"
-          name="location"
-          placeholder="Location"
-          value={filters.location}
-          onChange={handleFilterChange}
-          className="border p-2 rounded"
-        />
-        <input
-          type="number"
-          name="salaryMin"
-          placeholder="Min Salary"
-          value={filters.salaryMin}
-          onChange={handleFilterChange}
-          className="border p-2 rounded"
-        />
-        <input
-          type="number"
-          name="salaryMax"
-          placeholder="Max Salary"
-          value={filters.salaryMax}
-          onChange={handleFilterChange}
-          className="border p-2 rounded"
-        />
-      </div>
-
-      {currentTuitions.length === 0 ? (
-        <p className="text-center py-10">No tuitions match your filters.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {currentTuitions.map((item) => (
-            <TuitionCard key={item._id} tuition={item} />
-          ))}
-        </div>
-      )}
-
-      {tuitions.length > tuitionsPerPage && (
-        <div className="flex justify-center mt-8 gap-2">
-          {Array.from(
-            { length: Math.ceil(tuitions.length / tuitionsPerPage) },
-            (_, i) => i + 1
-          ).map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`px-3 py-1 rounded border ${
-                currentPage === page
-                  ? "bg-blue-500 text-white border-blue-500"
-                  : "bg-white text-gray-700 border-gray-300"
-              }`}
+          <div className="relative">
+            <FaBook className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500" />
+            <select
+              name="course"
+              value={filters.course}
+              onChange={handleFilterChange}
+              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {page}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+              <option value="">All Courses</option>
+              {courses.map((course) => (
+                <option key={course} value={course}>
+                  {course}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="relative">
+            <FaBook className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500" />
+            <select
+              name="subject"
+              value={filters.subject}
+              onChange={handleFilterChange}
+              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Subjects</option>
+              {subjects.map((subject) => (
+                <option key={subject} value={subject}>
+                  {subject}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="relative">
+            <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500" />
+            <input
+              type="text"
+              name="location"
+              placeholder="Location"
+              value={filters.location}
+              onChange={handleFilterChange}
+              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="relative">
+            <FaMoneyBillWave className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500" />
+            <input
+              type="number"
+              name="salaryMin"
+              placeholder="Min Salary"
+              value={filters.salaryMin}
+              onChange={handleFilterChange}
+              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="relative">
+            <FaMoneyBillWave className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500" />
+            <input
+              type="number"
+              name="salaryMax"
+              placeholder="Max Salary"
+              value={filters.salaryMax}
+              onChange={handleFilterChange}
+              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </motion.div>
+
+        {currentTuitions.length === 0 ? (
+          <p className="text-center py-16 text-gray-600 dark:text-gray-400">
+            No tuitions match your filters.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {currentTuitions.map((item) => (
+              <Card key={item._id}>
+                <TuitionCard tuition={item} />
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {tuitions.length > tuitionsPerPage && (
+          <div className="flex justify-center mt-10 gap-2 flex-wrap">
+            {Array.from(
+              { length: Math.ceil(tuitions.length / tuitionsPerPage) },
+              (_, i) => i + 1
+            ).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-4 py-2 rounded-xl font-medium transition ${
+                  currentPage === page
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </main>
   );
 }

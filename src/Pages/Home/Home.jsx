@@ -12,7 +12,7 @@ import PlatformStats from "../../Components/PlatformStats/PlatformStats";
 
 export default function Home() {
   return (
-    <div className="dark:bg-gray-900 dark:text-white">
+    <main className="dark:bg-gray-900 dark:text-white">
       <Banner />
       <HowToWorks />
       <LatestTuitions />
@@ -23,6 +23,6 @@ export default function Home() {
       <Testimonials />
       <FAQ />
       <ContactSection />
-    </div>
+    </main>
   );
 }
