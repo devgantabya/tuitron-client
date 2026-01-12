@@ -20,123 +20,146 @@ export default function TutorProfile() {
         setTutor(data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <p className="text-gray-600">Loading profile...</p>;
-  if (!tutor) return <p className="text-gray-600">Tutor not found.</p>;
+  if (loading)
+    return (
+      <p className="text-center py-20 text-gray-600 dark:text-gray-400">
+        Loading profile...
+      </p>
+    );
+
+  if (!tutor)
+    return (
+      <p className="text-center py-20 text-gray-600 dark:text-gray-400">
+        Tutor not found.
+      </p>
+    );
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <div className="flex flex-col md:flex-row md:items-center gap-6 mb-10">
-        <img
-          src={tutor.tutor_image}
-          alt={tutor.name}
-          className="w-32 h-32 rounded-xl border object-cover"
-        />
+    <main className="bg-blue-50 dark:bg-gray-900">
+      <div className="max-w-5xl mx-auto px-4 py-12">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 md:p-8 mb-12">
+          <div className="flex flex-col md:flex-row md:items-center gap-6">
+            <img
+              src={tutor.tutor_image}
+              alt={tutor.name}
+              className="w-32 h-32 rounded-2xl object-cover shadow-md"
+            />
 
-        <div>
-          <h1 className="text-3xl font-bold">{tutor.name}</h1>
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                {tutor.name}
+              </h1>
 
-          <p className="text-gray-600 dark:text-gray-300 flex items-center gap-2 mt-1">
-            <FaBook /> {tutor.subjectSpecialization?.join(", ")}
-          </p>
+              <p className="mt-2 flex items-center gap-2 text-gray-600 dark:text-gray-300">
+                <FaBook className="text-blue-500" />
+                {tutor.subjectSpecialization?.join(", ")}
+              </p>
 
-          <p className="text-gray-600 dark:text-gray-300 flex items-center gap-2 mt-1">
-            <FaChalkboardTeacher /> {tutor.experienceYears}+ Years Experience
-          </p>
+              <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+                <FaChalkboardTeacher className="text-blue-500" />
+                {tutor.experienceYears}+ Years Experience
+              </p>
 
-          <p className="text-gray-600 dark:text-gray-300 flex items-center gap-2 mt-1">
-            <FaMapMarkerAlt /> {tutor.location}
-          </p>
+              <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+                <FaMapMarkerAlt className="text-blue-500" />
+                {tutor.location}
+              </p>
 
-          <div className="flex items-center gap-1 mt-3">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <FaStar
-                key={i}
-                className={`${
-                  i < Math.round(tutor.rating)
-                    ? "text-yellow-400"
-                    : "text-gray-300 dark:text-gray-600"
-                }`}
-              />
-            ))}
-            <span className="ml-2 text-gray-700 dark:text-gray-300">
-              {tutor.rating}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold mb-2">About Me</h2>
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-          {tutor.about}
-        </p>
-      </div>
-
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Skills</h2>
-        <div className="flex flex-wrap gap-3">
-          {tutor.skills?.map((skill, index) => (
-            <span
-              key={index}
-              className="px-4 py-1.5 bg-blue-600 text-white rounded-full text-sm"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold mb-4">Tuition Preferences</h2>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="p-4 border rounded-xl bg-white dark:bg-gray-800 shadow-sm">
-            <h3 className="font-semibold">Tuition Type</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              {tutor.tuitionPreferences?.tuitionType}
-            </p>
-          </div>
-
-          <div className="p-4 border rounded-xl bg-white dark:bg-gray-800 shadow-sm">
-            <h3 className="font-semibold">Expected Salary</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              {tutor.tuitionPreferences?.expectedSalary}
-            </p>
-          </div>
-
-          <div className="p-4 border rounded-xl bg-white dark:bg-gray-800 shadow-sm">
-            <h3 className="font-semibold">Availability</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              {tutor.tuitionPreferences?.availability}
-            </p>
-          </div>
-
-          <div className="p-4 border rounded-xl bg-white dark:bg-gray-800 shadow-sm">
-            <h3 className="font-semibold">Preferred Areas</h3>
-            <div className="flex flex-wrap gap-2 mt-1">
-              {tutor.tuitionPreferences?.preferredAreas?.map((area, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm"
-                >
-                  {area}
+              <div className="flex items-center gap-1 mt-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <FaStar
+                    key={i}
+                    className={
+                      i < Math.round(tutor.rating)
+                        ? "text-yellow-400"
+                        : "text-gray-300 dark:text-gray-600"
+                    }
+                  />
+                ))}
+                <span className="ml-2 text-gray-700 dark:text-gray-300">
+                  {tutor.rating}
                 </span>
-              ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="text-center mt-12">
-        <button className="px-6 py-3 bg-blue-600 text-white rounded-xl flex items-center gap-2 mx-auto hover:bg-blue-700">
-          <FaEnvelope /> Contact Tutor
-        </button>
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold mb-3 text-gray-900 dark:text-white">
+            About Me
+          </h2>
+          <p className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-gray-700 dark:text-gray-300 leading-relaxed">
+            {tutor.about}
+          </p>
+        </section>
+
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
+            Skills
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            {tutor.skills?.map((skill, index) => (
+              <span
+                key={index}
+                className="px-4 py-2 rounded-full text-sm font-medium bg-blue-600/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
+            Tuition Preferences
+          </h2>
+
+          <div className="grid sm:grid-cols-2 gap-6">
+            {[
+              ["Tuition Type", tutor.tuitionPreferences?.tuitionType],
+              ["Expected Salary", tutor.tuitionPreferences?.expectedSalary],
+              ["Availability", tutor.tuitionPreferences?.availability],
+            ].map(([label, value], idx) => (
+              <div
+                key={idx}
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5"
+              >
+                <h3 className="font-semibold text-gray-900 dark:text-white">
+                  {label}
+                </h3>
+                <p className="mt-1 text-gray-600 dark:text-gray-300">{value}</p>
+              </div>
+            ))}
+
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5">
+              <h3 className="font-semibold text-gray-900 dark:text-white">
+                Preferred Areas
+              </h3>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {tutor.tuitionPreferences?.preferredAreas?.map(
+                  (area, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 rounded-lg text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                    >
+                      {area}
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="text-center">
+          <button className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition shadow-lg">
+            <FaEnvelope /> Contact Tutor
+          </button>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

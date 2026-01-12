@@ -3,7 +3,7 @@ import { Link, Outlet } from "react-router";
 import { AiOutlineHome } from "react-icons/ai";
 import { GoSidebarCollapse } from "react-icons/go";
 import { LuFilePen, LuFileSpreadsheet } from "react-icons/lu";
-import { RiPassPendingLine } from "react-icons/ri";
+// import { RiPassPendingLine } from "react-icons/ri";
 import { FaChalkboardTeacher, FaUsers } from "react-icons/fa";
 import { MdPayment } from "react-icons/md";
 import useRole from "./../../hooks/useRole";
@@ -82,7 +82,7 @@ const DashboardLayout = () => {
               </Link>
             </li>
 
-            <li>
+            {/* <li>
               <Link
                 to="/dashboard/applied-tutors"
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
@@ -93,7 +93,7 @@ const DashboardLayout = () => {
                 </span>
                 <span className="is-drawer-close:hidden">Applied Tutors</span>
               </Link>
-            </li>
+            </li> */}
 
             {role?.role === "admin" && (
               <>
