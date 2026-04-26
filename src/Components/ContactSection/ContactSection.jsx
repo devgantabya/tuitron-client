@@ -22,7 +22,7 @@ const ContactSection = () => {
 
   return (
     <motion.section
-      className="relative bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 py-20 px-4"
+      className="relative bg-linear-to-r from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 py-20 px-4"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
@@ -34,7 +34,6 @@ const ContactSection = () => {
 
       <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-12">
         <form onSubmit={handleSubmit} className="space-y-6">
-
           <motion.div
             className="flex items-center border-b border-gray-300 dark:border-gray-700 py-2"
             whileFocus={{ scale: 1.02 }}
@@ -92,7 +91,7 @@ const ContactSection = () => {
       </div>
 
       <div className="absolute -top-16 -left-16 w-40 h-40 bg-blue-200 dark:bg-blue-900 rounded-full opacity-30 pointer-events-none"></div>
-      <div className="absolute -bottom-16 -right-16 w-40 h-40 bg-blue-200 dark:bg-blue-900 rounded-full opacity-30 pointer-events-none"></div>
+      <div className="absolute -bottom-16 right-0 w-40 h-40 bg-blue-200 dark:bg-blue-900 rounded-full opacity-30 pointer-events-none"></div>
     </motion.section>
   );
 };
