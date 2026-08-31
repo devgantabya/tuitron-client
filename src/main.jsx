@@ -4,6 +4,7 @@ import { RouterProvider } from "react-router";
 import { router } from "./Routes/Router";
 import AuthProvider from "./Contexts/AuthContext/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "./Components/ThemeProvider/ThemeProvider";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -17,9 +18,11 @@ AOS.init({
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <RouterProvider router={router}></RouterProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+  <ThemeProvider defaultTheme="dark" storageKey="tuitron-ui-theme">
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );

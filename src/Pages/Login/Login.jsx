@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Eye, EyeOff, Lock, Mail, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
 import useAuth from "../../hooks/useAuth";
 import SocialLogin from "../../Components/SocialLogin/SocialLogin";
+import { Button } from "../../Components/UI/Button";
+import { Input } from "../../Components/UI/Input";
+import { Label } from "../../Components/UI/Label";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -32,70 +36,114 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-      <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-        Login to Tuitron
-      </h2>
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 relative overflow-hidden mt-16">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-purple-500/10 to-background" />
+      <div className="absolute top-20 right-20 h-72 w-72 bg-primary/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 left-20 h-72 w-72 bg-purple-500/20 rounded-full blur-3xl" />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
-        <div>
-          <label className="text-sm text-gray-700 dark:text-gray-300">
-            Email
-          </label>
-          <input
-            {...register("email", { required: true })}
-            type="email"
-            className="w-full px-4 py-2 mt-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
-          />
-          {errors.email && (
-            <span className="text-red-500 text-sm">Email required</span>
-          )}
-        </div>
-
-        <div>
-          <label className="text-sm text-gray-700 dark:text-gray-300">
-            Password
-          </label>
-          <div className="relative">
-            <input
-              {...register("password", { required: true })}
-              type={showPassword ? "text" : "password"}
-              className="w-full px-4 py-2 mt-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative z-10 w-full max-w-md"
+      >
+        <div className="bg-card border rounded-3xl shadow-2xl p-8 space-y-6">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-primary to-purple-500 text-white shadow-lg mb-4">
+              <Sparkles className="h-8 w-8" />
+            </div>
+            <h2 className="text-3xl font-bold text-foreground">
+              Welcome Back
+            </h2>
+            <p className="text-muted-foreground">
+              Sign in to continue your learning journey
+            </p>
           </div>
-          {errors.password && (
-            <span className="text-red-500 text-sm">Password required</span>
-          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Email */}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  {...register("email", { required: true })}
+                  className="pl-10"
+                />
+              </div>
+              {errors.email && (
+                <span className="text-sm text-destructive">Email is required</span>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  {...register("password", { required: true })}
+                  className="pl-10 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+              {errors.password && (
+                <span className="text-sm text-destructive">Password is required</span>
+              )}
+            </div>
+
+            {/* Login Button */}
+            <Button type="submit" className="w-full" size="lg">
+              Sign In
+            </Button>
+
+            {/* Demo Login */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={demoLogin}
+              className="w-full"
+              size="lg"
+            >
+              Try Demo Account
+            </Button>
+          </form>
+
+          {/* Social Login */}
+          <SocialLogin />
+
+          {/* Register Link */}
+          <p className="text-center text-sm text-muted-foreground">
+            Don't have an account?{" "}
+            <Link 
+              to="/register" 
+              className="font-medium text-primary hover:underline"
+            >
+              Create one
+            </Link>
+          </p>
         </div>
 
-        <button className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          Login
-        </button>
-
-        <button
-          type="button"
-          onClick={demoLogin}
-          className="w-full py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 dark:hover:bg-gray-700"
-        >
-          Login as Demo User
-        </button>
-      </form>
-
-      <SocialLogin />
-
-      <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-        Don't have an account?{" "}
-        <Link to="/register" className="text-blue-600 dark:text-blue-400">
-          Register
-        </Link>
-      </p>
+        {/* Bottom decoration */}
+        <div className="mt-8 text-center text-sm text-muted-foreground">
+          <p>Trusted by 12,000+ students worldwide</p>
+        </div>
+      </motion.div>
     </div>
   );
 }

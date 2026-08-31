@@ -1,4 +1,6 @@
 import React from "react";
+import { Label } from "../UI/Label";
+import { Input } from "../UI/Input";
 
 const FormInput = ({
   label,
@@ -9,15 +11,13 @@ const FormInput = ({
   placeholder,
 }) => {
   return (
-    <div className="flex flex-col">
-      <label className="mb-2 text-gray-700 dark:text-gray-300 font-medium">
-        {label}
-      </label>
-      <input
+    <div className="flex flex-col space-y-2">
+      <Label htmlFor={name}>{label}</Label>
+      <Input
+        id={name}
         type={type}
         {...register(name, { required })}
         placeholder={placeholder}
-        className="input input-bordered w-full pr-12 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
       />
     </div>
   );

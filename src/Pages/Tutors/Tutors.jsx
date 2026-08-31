@@ -1,12 +1,12 @@
-import {
-  FaStar,
-  FaMapMarkerAlt,
-  FaChalkboardTeacher,
-  FaSearch,
-} from "react-icons/fa";
+import { Star, MapPin, GraduationCap, Search, Briefcase } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "../../Components/UI/Card";
+import { Input } from "../../Components/UI/Input";
+import { Button } from "../../Components/UI/Button";
+import { Badge } from "../../Components/UI/Badge";
 
 export default function Tutors() {
   const [search, setSearch] = useState("");
@@ -32,84 +32,203 @@ export default function Tutors() {
       t.subjectSpecialization?.join(" ").toLowerCase().includes(query)
   );
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center mt-16">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
-    <main className="bg-blue-50 dark:bg-gray-900 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-          Find Tutors
-        </h1>
-
-        <div className="mb-10 max-w-xl mx-auto">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur shadow-md">
-            <FaSearch className="text-blue-500" />
-            <input
-              type="text"
-              placeholder="Search by name or subject..."
-              className="w-full bg-transparent outline-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-        </div>
-
-        {loading && (
-          <p className="text-center text-gray-600 dark:text-gray-400">
-            Loading tutors...
+    <main className="min-h-screen bg-background mt-16">
+      <div className="max-w-7xl mx-auto px-4 py-24">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
+            Find Expert Tutors
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Connect with qualified tutors who can help you achieve your learning goals
           </p>
-        )}
+        </motion.div>
 
-        {!loading && filtered.length === 0 && (
-          <p className="text-center text-gray-600 dark:text-gray-400">
-            No tutors found.
-          </p>
-        )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((t) => (
-            <div
-              key={t._id}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-5 flex flex-col"
-            >
-              <div className="flex gap-4">
-                <img
-                  src={t.tutor_image}
-                  alt={t.name}
-                  className="w-20 h-20 object-cover rounded-xl"
-                />
-
-                <div className="flex-1">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                    {t.name}
-                  </h2>
-
-                  <p className="mt-1 flex items-center gap-1 text-gray-600 dark:text-gray-300 text-sm">
-                    <FaChalkboardTeacher className="text-blue-500" />
-                    {t.subjectSpecialization?.join(", ")}
-                  </p>
-
-                  <p className="flex items-center gap-1 text-gray-600 dark:text-gray-300 text-sm">
-                    <FaMapMarkerAlt className="text-blue-500" />
-                    {t.location}
-                  </p>
-
-                  <p className="flex items-center gap-1 text-yellow-500 font-semibold text-sm">
-                    <FaStar /> {t.rating}
-                  </p>
-
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Experience: {t.experienceYears} Years
-                  </p>
-                </div>
-              </div>
-
-              <Link
-                to={`/tutors/${t._id}`}
-                className="mt-5 text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl font-medium transition"
-              >
-                View Profile
-              </Link>
+        {/* Search Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-12 max-w-2xl mx-auto"
+        >
+          <Card className="p-6">
+            <div className="flex items-center gap-3">
+              <Search className="h-5 w-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search by name or subject (e.g., Mathematics, Physics, Programming...)"
+                className="border-0 focus-visible:ring-0 text-base"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
-          ))}
-        </div>
+          </Card>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-12"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <GraduationCap className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-3xl font-bold">{tutors.length}</h3>
+                <p className="text-muted-foreground">Expert Tutors</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <Star className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-3xl font-bold">
+                  {tutors.length > 0
+                    ? (
+                        tutors.reduce((acc, t) => acc + (t.rating || 0), 0) /
+                        tutors.length
+                      ).toFixed(1)
+                    : "0"}
+                </h3>
+                <p className="text-muted-foreground">Average Rating</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <Briefcase className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-3xl font-bold">
+                  {tutors.length > 0
+                    ? Math.round(
+                        tutors.reduce(
+                          (acc, t) => acc + (t.experienceYears || 0),
+                          0
+                        ) / tutors.length
+                      )
+                    : "0"}
+                </h3>
+                <p className="text-muted-foreground">Avg. Experience (Years)</p>
+              </CardContent>
+            </Card>
+          </div>
+        </motion.div>
+
+        {/* Results Count */}
+        {search && (
+          <div className="mb-6">
+            <p className="text-sm text-muted-foreground">
+              Found <span className="font-semibold text-foreground">{filtered.length}</span> tutor
+              {filtered.length !== 1 ? "s" : ""} matching "{search}"
+            </p>
+          </div>
+        )}
+
+        {/* No Results */}
+        {filtered.length === 0 && (
+          <Card className="p-12">
+            <div className="text-center">
+              <Search className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">No tutors found</h3>
+              <p className="text-muted-foreground">
+                {search
+                  ? "Try searching with different keywords"
+                  : "No tutors available at the moment"}
+              </p>
+            </div>
+          </Card>
+        )}
+
+        {/* Tutors Grid */}
+        {filtered.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {filtered.map((tutor) => (
+              <Card
+                key={tutor._id}
+                className="overflow-hidden hover:shadow-xl transition-all duration-300"
+              >
+                <CardContent className="p-6">
+                  {/* Tutor Header */}
+                  <div className="flex gap-4 mb-4">
+                    <img
+                      src={tutor.tutor_image}
+                      alt={tutor.name}
+                      className="w-20 h-20 object-cover rounded-xl ring-2 ring-primary/10"
+                    />
+                    <div className="flex-1">
+                      <h2 className="text-xl font-bold text-foreground mb-1">
+                        {tutor.name}
+                      </h2>
+                      <div className="flex items-center gap-1 mb-2">
+                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                        <span className="font-semibold text-foreground">
+                          {tutor.rating}
+                        </span>
+                        <span className="text-sm text-muted-foreground ml-1">
+                          ({tutor.experienceYears} years exp)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Subjects */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <GraduationCap className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium text-muted-foreground">
+                        Specialization:
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {tutor.subjectSpecialization?.map((subject, idx) => (
+                        <Badge key={idx} variant="secondary">
+                          {subject}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    <span>{tutor.location}</span>
+                  </div>
+
+                  {/* View Profile Button */}
+                  <Button asChild className="w-full" size="lg">
+                    <Link to={`/tutors/${tutor._id}`}>View Profile</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </motion.div>
+        )}
       </div>
     </main>
   );

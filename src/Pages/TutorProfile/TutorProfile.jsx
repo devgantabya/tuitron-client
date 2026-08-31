@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import {
-  FaStar,
-  FaMapMarkerAlt,
-  FaBook,
-  FaChalkboardTeacher,
-  FaEnvelope,
-} from "react-icons/fa";
+  Star,
+  MapPin,
+  BookOpen,
+  GraduationCap,
+  Mail,
+  Briefcase,
+  Clock,
+  DollarSign,
+  Calendar,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../Components/UI/Card";
+import { Button } from "../../Components/UI/Button";
+import { Badge } from "../../Components/UI/Badge";
 
 export default function TutorProfile() {
   const { id } = useParams();
@@ -25,139 +33,225 @@ export default function TutorProfile() {
 
   if (loading)
     return (
-      <p className="text-center py-20 text-gray-600 dark:text-gray-400">
-        Loading profile...
-      </p>
+      <div className="min-h-screen flex justify-center items-center mt-16">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
     );
 
   if (!tutor)
     return (
-      <p className="text-center py-20 text-gray-600 dark:text-gray-400">
-        Tutor not found.
-      </p>
+      <div className="min-h-screen flex justify-center items-center mt-16">
+        <p className="text-xl text-muted-foreground">Tutor not found</p>
+      </div>
     );
 
   return (
-    <main className="bg-blue-50 dark:bg-gray-900">
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 md:p-8 mb-12">
-          <div className="flex flex-col md:flex-row md:items-center gap-6">
-            <img
-              src={tutor.tutor_image}
-              alt={tutor.name}
-              className="w-32 h-32 rounded-2xl object-cover shadow-md"
-            />
-
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {tutor.name}
-              </h1>
-
-              <p className="mt-2 flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                <FaBook className="text-blue-500" />
-                {tutor.subjectSpecialization?.join(", ")}
-              </p>
-
-              <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                <FaChalkboardTeacher className="text-blue-500" />
-                {tutor.experienceYears}+ Years Experience
-              </p>
-
-              <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                <FaMapMarkerAlt className="text-blue-500" />
-                {tutor.location}
-              </p>
-
-              <div className="flex items-center gap-1 mt-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className={
-                      i < Math.round(tutor.rating)
-                        ? "text-yellow-400"
-                        : "text-gray-300 dark:text-gray-600"
-                    }
+    <main className="min-h-screen bg-background mt-16">
+      <div className="max-w-6xl mx-auto px-4 py-24">
+        {/* Profile Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="mb-8">
+            <CardContent className="p-8">
+              <div className="flex flex-col md:flex-row md:items-start gap-8">
+                {/* Profile Image */}
+                <div className="flex-shrink-0">
+                  <img
+                    src={tutor.tutor_image}
+                    alt={tutor.name}
+                    className="w-40 h-40 rounded-2xl object-cover ring-4 ring-primary/10 shadow-xl"
                   />
-                ))}
-                <span className="ml-2 text-gray-700 dark:text-gray-300">
-                  {tutor.rating}
-                </span>
+                </div>
+
+                {/* Profile Info */}
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h1 className="text-4xl font-bold text-foreground mb-2">
+                      {tutor.name}
+                    </h1>
+                    
+                    {/* Rating */}
+                    <div className="flex items-center gap-2 mb-3">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-5 w-5 ${
+                            i < Math.round(tutor.rating)
+                              ? "text-yellow-500 fill-yellow-500"
+                              : "text-muted"
+                          }`}
+                        />
+                      ))}
+                      <span className="font-bold text-lg">{tutor.rating}</span>
+                      <span className="text-muted-foreground">/ 5.0</span>
+                    </div>
+                  </div>
+
+                  {/* Quick Stats */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="flex items-center gap-3 p-3 bg-accent rounded-lg">
+                      <GraduationCap className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Experience</p>
+                        <p className="font-semibold">{tutor.experienceYears}+ Years</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 p-3 bg-accent rounded-lg">
+                      <MapPin className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Location</p>
+                        <p className="font-semibold">{tutor.location}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 p-3 bg-accent rounded-lg">
+                      <BookOpen className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Subjects</p>
+                        <p className="font-semibold">
+                          {tutor.subjectSpecialization?.length || 0}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Subjects */}
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-2">Specialization:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {tutor.subjectSpecialization?.map((subject, idx) => (
+                        <Badge key={idx} variant="secondary">
+                          {subject}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left Column - Main Info */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* About Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>About Me</CardTitle>
+                  <CardDescription>Professional background and teaching philosophy</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {tutor.about}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Skills Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>Skills & Expertise</CardTitle>
+                  <CardDescription>Technical and teaching skills</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {tutor.skills?.map((skill, index) => (
+                      <Badge key={index} className="px-3 py-1">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
-        </div>
 
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-3 text-gray-900 dark:text-white">
-            About Me
-          </h2>
-          <p className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-            {tutor.about}
-          </p>
-        </section>
+          {/* Right Column - Tuition Preferences */}
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>Tuition Preferences</CardTitle>
+                  <CardDescription>Teaching preferences and availability</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Tuition Type */}
+                  <div className="flex items-start gap-3 p-3 bg-accent rounded-lg">
+                    <Briefcase className="h-5 w-5 text-primary mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Tuition Type</p>
+                      <p className="font-semibold">{tutor.tuitionPreferences?.tuitionType}</p>
+                    </div>
+                  </div>
 
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
-            Skills
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            {tutor.skills?.map((skill, index) => (
-              <span
-                key={index}
-                className="px-4 py-2 rounded-full text-sm font-medium bg-blue-600/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
-              >
-                {skill}
-              </span>
-            ))}
+                  {/* Expected Salary */}
+                  <div className="flex items-start gap-3 p-3 bg-accent rounded-lg">
+                    <DollarSign className="h-5 w-5 text-primary mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Expected Salary</p>
+                      <p className="font-semibold">{tutor.tuitionPreferences?.expectedSalary}</p>
+                    </div>
+                  </div>
+
+                  {/* Availability */}
+                  <div className="flex items-start gap-3 p-3 bg-accent rounded-lg">
+                    <Clock className="h-5 w-5 text-primary mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Availability</p>
+                      <p className="font-semibold">{tutor.tuitionPreferences?.availability}</p>
+                    </div>
+                  </div>
+
+                  {/* Preferred Areas */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <MapPin className="h-4 w-4 text-primary" />
+                      <p className="text-sm font-medium text-muted-foreground">Preferred Areas</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {tutor.tuitionPreferences?.preferredAreas?.map((area, index) => (
+                        <Badge key={index} variant="outline">
+                          {area}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Contact Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <Button className="w-full" size="lg">
+                <Mail className="mr-2 h-4 w-4" />
+                Contact Tutor
+              </Button>
+            </motion.div>
           </div>
-        </section>
-
-        <section className="mb-14">
-          <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
-            Tuition Preferences
-          </h2>
-
-          <div className="grid sm:grid-cols-2 gap-6">
-            {[
-              ["Tuition Type", tutor.tuitionPreferences?.tuitionType],
-              ["Expected Salary", tutor.tuitionPreferences?.expectedSalary],
-              ["Availability", tutor.tuitionPreferences?.availability],
-            ].map(([label, value], idx) => (
-              <div
-                key={idx}
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5"
-              >
-                <h3 className="font-semibold text-gray-900 dark:text-white">
-                  {label}
-                </h3>
-                <p className="mt-1 text-gray-600 dark:text-gray-300">{value}</p>
-              </div>
-            ))}
-
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5">
-              <h3 className="font-semibold text-gray-900 dark:text-white">
-                Preferred Areas
-              </h3>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {tutor.tuitionPreferences?.preferredAreas?.map(
-                  (area, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 rounded-lg text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                    >
-                      {area}
-                    </span>
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div className="text-center">
-          <button className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition shadow-lg">
-            <FaEnvelope /> Contact Tutor
-          </button>
         </div>
       </div>
     </main>

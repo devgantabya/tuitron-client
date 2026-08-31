@@ -12,7 +12,7 @@ import PlatformStats from "../../Components/PlatformStats/PlatformStats";
 
 export default function Home() {
   return (
-    <main className="dark:bg-gray-900 dark:text-white">
+    <main>
       <Banner />
       <HowToWorks />
       <LatestTuitions />

@@ -1,88 +1,163 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FaQuoteLeft } from "react-icons/fa";
+import { Quote, Star } from "lucide-react";
 
 const testimonials = [
   {
     name: "Sarah Khan",
-    role: "Student",
+    role: "Computer Science Student",
     feedback:
-      "Tuitron made it so easy to find the right tutor for my math classes. Highly recommend!",
-    avatar: "https://i.pravatar.cc/100?img=32",
+      "Tuitron completely transformed my learning experience. Found the perfect tutor who understood exactly what I needed. My grades improved dramatically!",
+    avatar: "https://i.pravatar.cc/150?img=32",
+    rating: 5,
   },
   {
     name: "Rahim Uddin",
-    role: "Parent",
+    role: "Parent of 2 Students",
     feedback:
-      "I could track my child's progress and communicate with the tutor seamlessly. Amazing platform!",
-    avatar: "https://i.pravatar.cc/100?img=12",
+      "As a parent, I love being able to track progress and communicate easily with tutors. The platform gives me peace of mind knowing my children are in good hands.",
+    avatar: "https://i.pravatar.cc/150?img=12",
+    rating: 5,
   },
   {
     name: "Ayesha Sultana",
-    role: "Student",
+    role: "Medical Student",
     feedback:
-      "Loved the easy application process and quick responses from tutors. Great experience!",
-    avatar: "https://i.pravatar.cc/100?img=45",
+      "The quality of tutors here is exceptional. Quick responses, professional approach, and flexible scheduling made my exam preparation stress-free.",
+    avatar: "https://i.pravatar.cc/150?img=45",
+    rating: 5,
   },
 ];
 
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: {},
   visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2 },
+    transition: {
+      staggerChildren: 0.15,
+    },
   },
 };
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 const Testimonials = () => {
   return (
-    <section className="py-20 px-4 bg-blue-50 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-gray-100">
-          What Our Users Say
-        </h2>
+    <section className="relative py-24 px-4 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/30 to-background" />
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16 space-y-4"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-accent-foreground text-sm font-medium border">
+            <Star className="h-4 w-4 fill-current" />
+            Testimonials
+          </div>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold">
+            <span className="text-foreground">What Our </span>
+            <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              Students Say
+            </span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Real stories from real students who achieved their goals with us
+          </p>
+        </motion.div>
 
+        {/* Testimonials Grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-8"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
         >
-          {testimonials.map((t, index) => (
+          {testimonials.map((testimonial, idx) => (
             <motion.div
-              key={index}
+              key={idx}
               variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 flex flex-col items-center text-center transition"
+              className="group relative"
             >
-              <FaQuoteLeft className="text-blue-500 dark:text-blue-400 text-2xl mb-4" />
+              <div className="relative h-full bg-card border rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                {/* Quote Icon */}
+                <div className="absolute -top-4 -left-4 h-16 w-16 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Quote className="h-8 w-8" />
+                </div>
 
-              <img
-                src={t.avatar}
-                alt={t.name}
-                className="w-20 h-20 rounded-full mb-4 border-2 border-blue-600 dark:border-blue-400"
-                loading="lazy"
-              />
+                {/* Stars */}
+                <div className="flex gap-1 mb-4 mt-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
 
-              <p className="text-gray-700 dark:text-gray-300 mb-6 italic">
-                “{t.feedback}”
-              </p>
+                {/* Feedback */}
+                <p className="text-muted-foreground leading-relaxed mb-6 italic">
+                  "{testimonial.feedback}"
+                </p>
 
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                {t.name}
-              </h4>
+                {/* Author */}
+                <div className="flex items-center gap-4 pt-4 border-t">
+                  <img
+                    src={testimonial.avatar}
+                    alt={testimonial.name}
+                    className="w-14 h-14 rounded-full border-2 border-primary object-cover"
+                    loading="lazy"
+                  />
+                  <div>
+                    <div className="font-semibold text-foreground">
+                      {testimonial.name}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {testimonial.role}
+                    </div>
+                  </div>
+                </div>
 
-              <span className="text-blue-600 dark:text-blue-400 text-sm">
-                {t.role}
-              </span>
+                {/* Bottom gradient line */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-3xl" />
+              </div>
             </motion.div>
           ))}
+        </motion.div>
+
+        {/* Bottom CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-16 text-center"
+        >
+          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-card border shadow-lg">
+            <div className="flex -space-x-2">
+              {testimonials.map((t, idx) => (
+                <img
+                  key={idx}
+                  src={t.avatar}
+                  alt=""
+                  className="h-8 w-8 rounded-full border-2 border-background object-cover"
+                />
+              ))}
+            </div>
+            <span className="text-sm">
+              <span className="font-bold text-foreground">10,000+</span>{" "}
+              <span className="text-muted-foreground">happy students</span>
+            </span>
+          </div>
         </motion.div>
       </div>
     </section>

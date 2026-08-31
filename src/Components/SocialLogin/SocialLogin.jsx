@@ -2,6 +2,7 @@ import React from "react";
 import useAuth from "../../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { Button } from "../UI/Button";
 
 const SocialLogin = () => {
   const { signInWithGoogle } = useAuth();
@@ -29,18 +30,31 @@ const SocialLogin = () => {
   };
 
   return (
-    <div>
-      <div className="divider my-4">OR</div>
-      <button
+    <div className="space-y-4">
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-border"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-background text-muted-foreground font-medium">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
         onClick={handleGoogleLogin}
-        className="btn bg-white text-black border-[#e5e5e5] w-full hover:bg-gray-100 flex items-center justify-center space-x-2"
+        className="w-full h-12 text-base gap-3 hover:bg-accent transition-all duration-300 group"
       >
         <svg
           aria-label="Google logo"
-          width="16"
-          height="16"
+          width="20"
+          height="20"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
+          className="group-hover:scale-110 transition-transform duration-300"
         >
           <g>
             <path d="m0 0H512V512H0" fill="#fff"></path>
@@ -62,8 +76,8 @@ const SocialLogin = () => {
             ></path>
           </g>
         </svg>
-        Login with Google
-      </button>
+        <span className="font-medium">Continue with Google</span>
+      </Button>
     </div>
   );
 };

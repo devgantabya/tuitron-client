@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { FaMapMarkerAlt, FaMoneyBillWave, FaBook } from "react-icons/fa";
+import { MapPin, DollarSign, BookOpen, Search, Filter } from "lucide-react";
 import TuitionCard from "../../Components/TuitionCard/TuitionCard";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import Card from "./../../Components/UI/Card";
+import { Card } from "../../Components/UI/Card";
+import { Input } from "../../Components/UI/Input";
+import { Label } from "../../Components/UI/Label";
+import { Button } from "../../Components/UI/Button";
 
 export default function Tuitions() {
   const axiosSecure = useAxiosSecure();
@@ -94,130 +97,184 @@ export default function Tuitions() {
 
   if (loading)
     return (
-      <p className="min-h-screen flex justify-center items-center text-gray-600 dark:text-gray-400">
-        Loading tuitions...
-      </p>
+      <div className="min-h-screen flex justify-center items-center mt-16">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
     );
 
   return (
-    <main className="bg-blue-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white">
-          All Tuitions
-        </h2>
+    <main className="min-h-screen bg-background mt-16">
+      <div className="max-w-7xl mx-auto px-4 py-24">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
+            Find Your Perfect Tuition
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Browse available tuitions by class, subject, location, and budget.
+          </p>
+        </motion.div>
 
-        <p className="text-center mt-3 mb-12 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          Browse available tuitions by class, subject, location, and budget.
-        </p>
-
+        {/* Filters Card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-12 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-lg p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="relative">
-            <FaBook className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500" />
-            <select
-              name="course"
-              value={filters.course}
-              onChange={handleFilterChange}
-              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">All Courses</option>
-              {courses.map((course) => (
-                <option key={course} value={course}>
-                  {course}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Card className="mb-12 p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <Filter className="h-5 w-5 text-primary" />
+              <h2 className="text-xl font-semibold">Filter Tuitions</h2>
+            </div>
 
-          <div className="relative">
-            <FaBook className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500" />
-            <select
-              name="subject"
-              value={filters.subject}
-              onChange={handleFilterChange}
-              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">All Subjects</option>
-              {subjects.map((subject) => (
-                <option key={subject} value={subject}>
-                  {subject}
-                </option>
-              ))}
-            </select>
-          </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {/* Course Filter */}
+              <div className="space-y-2">
+                <Label htmlFor="course" className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  Course
+                </Label>
+                <select
+                  id="course"
+                  name="course"
+                  value={filters.course}
+                  onChange={handleFilterChange}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">All Courses</option>
+                  {courses.map((course) => (
+                    <option key={course} value={course}>
+                      {course}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="relative">
-            <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500" />
-            <input
-              type="text"
-              name="location"
-              placeholder="Location"
-              value={filters.location}
-              onChange={handleFilterChange}
-              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+              {/* Subject Filter */}
+              <div className="space-y-2">
+                <Label htmlFor="subject" className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  Subject
+                </Label>
+                <select
+                  id="subject"
+                  name="subject"
+                  value={filters.subject}
+                  onChange={handleFilterChange}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">All Subjects</option>
+                  {subjects.map((subject) => (
+                    <option key={subject} value={subject}>
+                      {subject}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="relative">
-            <FaMoneyBillWave className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500" />
-            <input
-              type="number"
-              name="salaryMin"
-              placeholder="Min Salary"
-              value={filters.salaryMin}
-              onChange={handleFilterChange}
-              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+              {/* Location Filter */}
+              <div className="space-y-2">
+                <Label htmlFor="location" className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-primary" />
+                  Location
+                </Label>
+                <Input
+                  id="location"
+                  name="location"
+                  type="text"
+                  placeholder="Enter location"
+                  value={filters.location}
+                  onChange={handleFilterChange}
+                />
+              </div>
 
-          <div className="relative">
-            <FaMoneyBillWave className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500" />
-            <input
-              type="number"
-              name="salaryMax"
-              placeholder="Max Salary"
-              value={filters.salaryMax}
-              onChange={handleFilterChange}
-              className="w-full pl-10 pr-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+              {/* Min Salary Filter */}
+              <div className="space-y-2">
+                <Label htmlFor="salaryMin" className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-primary" />
+                  Min Salary
+                </Label>
+                <Input
+                  id="salaryMin"
+                  name="salaryMin"
+                  type="number"
+                  placeholder="Min"
+                  value={filters.salaryMin}
+                  onChange={handleFilterChange}
+                />
+              </div>
+
+              {/* Max Salary Filter */}
+              <div className="space-y-2">
+                <Label htmlFor="salaryMax" className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-primary" />
+                  Max Salary
+                </Label>
+                <Input
+                  id="salaryMax"
+                  name="salaryMax"
+                  type="number"
+                  placeholder="Max"
+                  value={filters.salaryMax}
+                  onChange={handleFilterChange}
+                />
+              </div>
+            </div>
+
+            {/* Results Count */}
+            <div className="mt-6 pt-4 border-t border-border">
+              <p className="text-sm text-muted-foreground">
+                Found <span className="font-semibold text-foreground">{tuitions.length}</span> tuition
+                {tuitions.length !== 1 ? "s" : ""} matching your criteria
+              </p>
+            </div>
+          </Card>
         </motion.div>
 
+        {/* Results */}
         {currentTuitions.length === 0 ? (
-          <p className="text-center py-16 text-gray-600 dark:text-gray-400">
-            No tuitions match your filters.
-          </p>
+          <Card className="p-12">
+            <div className="text-center">
+              <Search className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">No tuitions found</h3>
+              <p className="text-muted-foreground">
+                Try adjusting your filters to find more results
+              </p>
+            </div>
+          </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"
+          >
             {currentTuitions.map((item) => (
-              <Card key={item._id}>
-                <TuitionCard tuition={item} />
-              </Card>
+              <TuitionCard key={item._id} tuition={item} />
             ))}
-          </div>
+          </motion.div>
         )}
 
+        {/* Pagination */}
         {tuitions.length > tuitionsPerPage && (
-          <div className="flex justify-center mt-10 gap-2 flex-wrap">
+          <div className="flex justify-center mt-12 gap-2 flex-wrap">
             {Array.from(
               { length: Math.ceil(tuitions.length / tuitionsPerPage) },
               (_, i) => i + 1
             ).map((page) => (
-              <button
+              <Button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`px-4 py-2 rounded-xl font-medium transition ${
-                  currentPage === page
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-                }`}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
               >
                 {page}
-              </button>
+              </Button>
             ))}
           </div>
         )}

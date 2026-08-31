@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import {
-  MdCategory,
-  MdOutlineSubject,
-  MdOutlineAvTimer,
-  MdDateRange,
-} from "react-icons/md";
-import { BiLogoDiscourse, BiCategoryAlt } from "react-icons/bi";
-import { LuCalendarDays } from "react-icons/lu";
-import { GiSandsOfTime } from "react-icons/gi";
-import { VscSymbolMethod } from "react-icons/vsc";
-import { TbMoneybag, TbWorld } from "react-icons/tb";
-import { PiStudent, PiCity } from "react-icons/pi";
-import { BsGenderAmbiguous } from "react-icons/bs";
-import { FaRegObjectUngroup, FaLocationDot } from "react-icons/fa6";
-import {
-  FaFileSignature,
-  FaRegAddressCard,
-  FaArrowRight,
-} from "react-icons/fa";
+  BookOpen,
+  Calendar,
+  Clock,
+  DollarSign,
+  Users,
+  MapPin,
+  GraduationCap,
+  FileText,
+  Mail,
+  ArrowRight,
+} from "lucide-react";
 import useRole from "./../../hooks/useRole";
 import ApplyModal from "../../Components/ApplyModal/ApplyModal";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../Components/UI/Card";
+import { Button } from "../../Components/UI/Button";
+import { Badge } from "../../Components/UI/Badge";
 
 const TuitionDetails = () => {
   const { id } = useParams();
@@ -53,196 +49,181 @@ const TuitionDetails = () => {
   }, [id, axiosSecure]);
 
   if (roleLoading || loading) {
-    return <p className="text-center py-10">Loading...</p>;
+    return (
+      <div className="min-h-screen flex justify-center items-center mt-16">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   if (!tuition)
     return (
-      <p className="min-h-screen flex justify-center items-center">
-        Tuition not found
-      </p>
+      <div className="min-h-screen flex justify-center items-center mt-16">
+        <p className="text-xl text-muted-foreground">Tuition not found</p>
+      </div>
     );
 
   return (
-    <div className="bg-background-light dark:bg-background-dark font-sans transition-colors duration-300 min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-4xl space-y-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-text-light-main dark:text-text-dark-main">
+    <div className="min-h-screen bg-background mt-16 py-24 px-4">
+      <div className="max-w-5xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
             Tuition Details
           </h1>
+          <p className="text-muted-foreground text-lg">
+            Complete information about this tuition opportunity
+          </p>
         </div>
 
-        <section className="bg-card-light dark:bg-card-dark shadow-sm rounded-2xl p-6 sm:p-8 transition-colors duration-300">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-4">
-            <Item
-              icon={<MdCategory />}
-              label="Category"
-              value={tuition.category}
-            />
-
-            <Item
-              icon={<BiLogoDiscourse />}
-              label="Course"
-              value={tuition.course}
-            />
-
-            <Item
-              icon={<MdOutlineSubject />}
-              label="Subject"
-              value={tuition.subject}
-            />
-
-            <Item icon={<LuCalendarDays />} label="Days" value={tuition.days} />
-
-            <Item
-              icon={<MdOutlineAvTimer />}
-              label="Time"
-              value={tuition.time}
-            />
-
-            <Item
-              icon={<GiSandsOfTime />}
-              label="Duration"
-              value={tuition.duration}
-            />
-
-            <Item
-              icon={<VscSymbolMethod />}
-              label="Method"
-              value={tuition.method}
-            />
-
-            <Item
-              icon={<TbMoneybag />}
-              label="Salary"
-              value={`${tuition.salary} TK`}
-            />
-
-            <Item
-              icon={<PiStudent />}
-              label="Students"
-              value={tuition.students}
-            />
-
-            <Item
-              icon={<BsGenderAmbiguous />}
-              label="Gender"
-              value={tuition.gender}
-            />
-          </div>
-        </section>
-
-        <section className="bg-card-light dark:bg-card-dark shadow-sm rounded-2xl p-6 sm:p-8 transition-colors duration-300">
-          <h2 className="text-xl font-bold text-blue-600 mb-8 border-b dark:border-gray-700 pb-4">
-            Tutor Requirements
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-4 mb-8">
-            <Item
-              icon={<BiCategoryAlt />}
-              label="Category"
-              value={tuition.requirements?.category}
-            />
-
-            <Item
-              icon={<FaRegObjectUngroup />}
-              label="Group"
-              value={tuition.requirements?.group}
-            />
-
-            <Item
-              icon={<BsGenderAmbiguous />}
-              label="Gender"
-              value={tuition.requirements?.gender}
-            />
-
-            <Item
-              icon={<MdDateRange />}
-              label="Hiring From"
-              value={tuition.requirements?.hiring_from}
-            />
-          </div>
-
-          <div className="flex items-start space-x-3 bg-background-light dark:bg-slate-700/50 p-2 rounded-xl">
-            <div className="mt-0.5 text-blue-600 text-xl">
-              <FaFileSignature />
+        {/* Basic Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5 text-primary" />
+              Basic Information
+            </CardTitle>
+            <CardDescription>Core details about the tuition</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <InfoItem icon={<BookOpen />} label="Category" value={tuition.category} />
+              <InfoItem icon={<GraduationCap />} label="Course" value={tuition.course} />
+              <InfoItem icon={<BookOpen />} label="Subject" value={tuition.subject} />
+              <InfoItem icon={<Calendar />} label="Days" value={tuition.days} />
+              <InfoItem icon={<Clock />} label="Time" value={tuition.time} />
+              <InfoItem icon={<Clock />} label="Duration" value={tuition.duration} />
+              <InfoItem icon={<FileText />} label="Method" value={tuition.method} />
+              <InfoItem 
+                icon={<DollarSign />} 
+                label="Salary" 
+                value={`৳${tuition.salary}`}
+                highlight 
+              />
+              <InfoItem icon={<Users />} label="Students" value={tuition.students} />
+              <InfoItem icon={<Users />} label="Gender" value={tuition.gender} />
             </div>
-            <div>
-              <p className="text-sm font-bold text-text-light-main dark:text-text-dark-main mb-1">
-                Other Requirement
-              </p>
-              <p className="text-sm text-text-light-sub dark:text-text-dark-sub leading-relaxed">
-                {tuition.requirements?.other}
-              </p>
+          </CardContent>
+        </Card>
+
+        {/* Tutor Requirements */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GraduationCap className="h-5 w-5 text-primary" />
+              Tutor Requirements
+            </CardTitle>
+            <CardDescription>Qualifications we're looking for</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <InfoItem 
+                icon={<BookOpen />} 
+                label="Category" 
+                value={tuition.requirements?.category} 
+              />
+              <InfoItem 
+                icon={<GraduationCap />} 
+                label="Group" 
+                value={tuition.requirements?.group} 
+              />
+              <InfoItem 
+                icon={<Users />} 
+                label="Gender" 
+                value={tuition.requirements?.gender} 
+              />
+              <InfoItem 
+                icon={<Calendar />} 
+                label="Hiring From" 
+                value={tuition.requirements?.hiring_from} 
+              />
             </div>
-          </div>
-        </section>
 
-        <section className="bg-card-light dark:bg-card-dark shadow-sm rounded-2xl p-6 sm:p-8 transition-colors duration-300">
-          <h2 className="text-xl font-bold text-blue-600 mb-8 border-b dark:border-gray-700 pb-4">
-            Contact Informations
-          </h2>
+            {tuition.requirements?.other && (
+              <div className="p-4 bg-accent/50 rounded-lg border border-border">
+                <div className="flex items-start gap-3">
+                  <FileText className="h-5 w-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="font-semibold mb-1">Other Requirements</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {tuition.requirements?.other}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-4 mb-8">
-            <Item
-              icon={<TbWorld />}
-              label="Country"
-              value={tuition.contact?.country}
-            />
-
-            <Item
-              icon={<PiCity />}
-              label="City"
-              value={tuition.contact?.city}
-            />
-
-            <Item
-              icon={<FaLocationDot />}
-              label="Location"
-              value={tuition.contact?.location}
-            />
-          </div>
-
-          <div className="flex items-start space-x-3">
-            <div className="mt-1 p-1 text-blue-600 text-xl">
-              <FaRegAddressCard />
+        {/* Contact Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-primary" />
+              Contact Information
+            </CardTitle>
+            <CardDescription>Location and contact details</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <InfoItem 
+                icon={<MapPin />} 
+                label="Country" 
+                value={tuition.contact?.country} 
+              />
+              <InfoItem 
+                icon={<MapPin />} 
+                label="City" 
+                value={tuition.contact?.city} 
+              />
+              <InfoItem 
+                icon={<MapPin />} 
+                label="Location" 
+                value={tuition.contact?.location} 
+              />
             </div>
-            <div>
-              <p className="text-sm font-bold text-text-light-main dark:text-text-dark-main">
-                Full Address
-              </p>
-              <p className="text-sm text-text-light-sub dark:text-text-dark-sub mt-1">
-                {tuition.contact?.address}
-              </p>
-            </div>
-          </div>
-        </section>
 
-        <div className="pt-4 pb-8 w-full flex justify-center">
+            {tuition.contact?.address && (
+              <div className="p-4 bg-accent/50 rounded-lg border border-border">
+                <div className="flex items-start gap-3">
+                  <Mail className="h-5 w-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="font-semibold mb-1">Full Address</p>
+                    <p className="text-sm text-muted-foreground">
+                      {tuition.contact?.address}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Apply Button */}
+        <div className="flex justify-center pt-4">
           {role?.role === "tutor" ? (
-            <button
+            <Button
               onClick={() => setIsModalOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-12 rounded-xl shadow-lg transition-transform transform active:scale-95 focus:outline-none w-full sm:w-auto text-lg flex items-center justify-center gap-2"
+              size="lg"
+              className="w-full sm:w-auto px-12"
             >
               Apply Now
-              <span className="text-sm">
-                <FaArrowRight />
-              </span>
-            </button>
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           ) : (
-            <button
-              className="bg-blue-300 text-white font-semibold py-3.5 px-12 rounded-xl shadow-lg focus:outline-none w-full sm:w-auto text-lg flex items-center justify-center gap-2"
-              title="Only tutors can apply"
+            <Button
               disabled
+              size="lg"
+              variant="secondary"
+              className="w-full sm:w-auto px-12"
             >
-              For Tutor
-              <span className="text-sm">
-                <FaArrowRight />
-              </span>
-            </button>
+              For Tutors Only
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           )}
         </div>
       </div>
+
       {isModalOpen && (
         <ApplyModal tuition={tuition} onClose={() => setIsModalOpen(false)} />
       )}
@@ -250,16 +231,16 @@ const TuitionDetails = () => {
   );
 };
 
-const Item = ({ icon, label, value }) => (
-  <div className="flex items-start space-x-3">
-    <div className="mt-1 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600">
-      <span className="text-xl">{icon}</span>
+const InfoItem = ({ icon, label, value, highlight }) => (
+  <div className="flex items-start gap-3">
+    <div className={`p-2 rounded-lg ${highlight ? 'bg-primary/10' : 'bg-accent'}`}>
+      <div className={highlight ? 'text-primary' : 'text-muted-foreground'}>
+        {icon}
+      </div>
     </div>
     <div>
-      <p className="text-sm font-semibold text-text-light-main dark:text-text-dark-main">
-        {label}
-      </p>
-      <p className="text-sm text-text-light-sub dark:text-text-dark-sub">
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
+      <p className={`font-semibold ${highlight ? 'text-primary text-lg' : 'text-foreground'}`}>
         {value}
       </p>
     </div>
