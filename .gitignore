@@ -11,13 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
-.env
 Login copy.jsx
 Register copy.jsx
 Navbar copy.jsx
 
 # Editor directories and files
-.vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -26,3 +24,4 @@ Navbar copy.jsx
 *.njsproj
 *.sln
 *.sw?
+config.bat
